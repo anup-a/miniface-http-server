@@ -1,4 +1,4 @@
-## Initial Commit - Mini FacebookExamples from https://www.tutorialspoint.com/http/http_requests.htm
+Examples from https://www.tutorialspoint.com/http/http_requests.htm
 
 ### GET Request
 
