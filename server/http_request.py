@@ -4,13 +4,15 @@ from helpers import *
 
 def handle_GET(res_sock, req_line):
 
+    print("Fetching Response ...")
+
     http_req, req_uri, protocol_version = req_line
 
     req_uri = req_uri[1:]
     if req_uri == '':
         req_uri = 'index.html'
 
-    file = join('src', req_uri)
+    file = join('server/src', req_uri)
 
     file_size = get_size(file)
     http_res = gen_status(file_size)

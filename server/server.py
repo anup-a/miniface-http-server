@@ -23,6 +23,8 @@ def init_server(port):
     sock.bind(listen_addr)
     sock.listen(5)
 
+    print("Server listening ....")
+
     while True:
         req_sock, req_addr = sock.accept()
         thread = Thread(target=handle_req, args=(req_sock,)).start()
