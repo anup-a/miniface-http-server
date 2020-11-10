@@ -1,4 +1,14 @@
+Running Instructions
+
+```
+cd mini-facebook
+python server\server.py
+
+```
+
+
 Examples from https://www.tutorialspoint.com/http/http_requests.htm
+
 
 ### GET Request
 
