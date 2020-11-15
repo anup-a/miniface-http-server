@@ -1,6 +1,13 @@
+import json
 from os.path import isfile, getsize
 from mimetypes import guess_type
 from datetime import datetime
+from quik import FileLoader
+
+
+loader = FileLoader('')
+f = open('server/db/data.json')
+database = json.load(f)
 
 
 def get_size(resource):
@@ -33,15 +40,26 @@ def gen_status(file_size):
     return status
 
 
+def populate_data(template):
+    file_data = template.render(
+        {'feed': database["feed"]}, loader=loader).encode('utf-8')
+
+    return file_data
+
+
 def read_file(file):
 
     file_data = b''
 
     if get_size(file):
-        res = open(file, 'r+b')
-
-        for i in range(get_size(file)):
-            file_data += res.read()
+        template = loader.load_template(file)
+        file_data = populate_data(template)
+        """
+        For Static files
+        """
+        # res = open(file, 'r+b')
+        # for i in range(get_size(file)):
+        #     file_data += res.read()
 
     return file_data
 
@@ -55,9 +73,12 @@ def get_response_headers(file):
     date = timestamp.strftime('%a, %d %b %Y %H:%M:%S GMT')
     response_headers.append(b'Date: ' + date.encode('ASCII') + b'\r\n')
 
-    content_length = get_size(file)
-    response_headers.append(b'Content-Length: ' +
-                            str(content_length).encode('ASCII') + b'\r\n')
+    """
+    TODO: Bug when dynamic template used
+    """
+    # content_length = getsize(file)
+    # response_headers.append(b'Content-Length: ' +
+    #                         str(content_length).encode('ASCII') + b'\r\n')
 
     response_headers.append(b'Content-Type: ' + get_mime_type(file) + b'\r\n')
     response_headers.append(b'Connection: close\r\n')

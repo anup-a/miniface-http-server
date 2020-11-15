@@ -6,6 +6,20 @@
     <title>Document</title>
   </head>
   <body>
-    This is it !!
+    Facebook Feed
+    <div class="feed" id="feed">
+      <ul>
+        #for @post in @feed:
+        <li>@post</li>
+        #end
+      </ul>
+    </div>
+    <hr />
+    <form method="POST" action="/">
+      <lablel for="name">Enter your name : </lablel>
+      <input name="name" placeholder="type here ..." />
+      <button type="submit">Submit</button>
+    </form>
   </body>
+  <script></script>
 </html>
