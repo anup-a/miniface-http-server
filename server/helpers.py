@@ -6,8 +6,8 @@ from quik import FileLoader
 
 
 loader = FileLoader('')
-f = open('server/db/data.json')
-database = json.load(f)
+db_f = open('server/db/data.json')
+database = json.load(db_f)
 
 
 def get_size(resource):

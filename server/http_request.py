@@ -42,5 +42,18 @@ def handle_POST(res_sock, req_line, req_headers):
         msg = res_sock.recv(1)
         body += msg
 
-    # DO SOMETHING
-    print(body)
+    update_to_db(body)
+
+
+def body_parser(body):
+    body = body.decode("utf-8")
+    data = body.split("=")
+    return {data[0]: data[1]}
+
+
+def update_to_db(body):
+    parsedText = body_parser(body)
+    database["feed"].append(parsedText["name"])
+
+    with open('server/db/data.json', 'w') as f:
+        json.dump(database, f)
