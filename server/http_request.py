@@ -32,7 +32,8 @@ def handle_POST(res_sock, req_line, req_headers):
 def body_parser(body):
     body = body.decode("utf-8")
     data = body.split("=")
-    return {data[0]: data[1]}
+    postBody = data[1].replace("+", " ")
+    return {data[0]: postBody}
 
 
 def update_to_db(body):
