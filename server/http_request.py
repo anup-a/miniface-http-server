@@ -24,6 +24,8 @@ def handle_POST(res_sock, req_line, req_headers):
         body += msg
 
     update_to_db(body)
+
+    # Redirect to / or /index.html
     handle_redirect(res_sock, '')
 
 
