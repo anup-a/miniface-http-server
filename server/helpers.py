@@ -3,11 +3,9 @@ from os.path import isfile, getsize
 from mimetypes import guess_type
 from datetime import datetime
 from quik import FileLoader
-
+from db import *
 
 loader = FileLoader('')
-db_f = open('server/db/data.json')
-database = json.load(db_f)
 
 
 def get_size(resource):
@@ -47,13 +45,27 @@ def populate_data(template):
     return file_data
 
 
-def read_file(file):
+def read_file(file, redir_param):
+
+    redirect = False
+    path = "/"
+
+    if 'redirect' in redir_param.keys():
+        redirect = redir_param['redirect']
+        path = redir_param['path']
 
     file_data = b''
 
     if get_size(file):
-        template = loader.load_template(file)
-        file_data = populate_data(template)
+
+        if not redirect:
+            template = loader.load_template(file)
+            file_data = populate_data(template, redir_param)
+        else:
+            res = open('server/src/redirect.html', 'r+b')
+            for i in range(get_size(file)):
+                file_data += res.read()
+
         """
         For Static files
         """
