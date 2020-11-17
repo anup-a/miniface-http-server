@@ -1,7 +1,7 @@
 from os.path import join
 from helpers import *
-from db import update_to_db
 from body_parser import body_parser
+import controller
 
 
 def handle_GET(res_sock, req_line):
@@ -20,7 +20,11 @@ def handle_POST(res_sock, req_line, req_headers):
         body += msg
 
     # Update data to database
-    update_to_db(body)
+
+    # json
+    # update_to_db(body)
+
+    controller.addtoDB(req_uri, body)
 
     # Redirect to / or /index.html
     handle_redirect(res_sock, '')
@@ -46,7 +50,7 @@ def handle_response(res_sock, req_uri, redir_param={}):
 
     http_body = b'\r\n'
 
-    http_body += read_file(file, redir_param)
+    http_body += read_file(file, req_uri, redir_param)
 
     res_headers = get_response_headers(file)
 

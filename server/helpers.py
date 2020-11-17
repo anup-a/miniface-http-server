@@ -4,7 +4,7 @@ from mimetypes import guess_type
 from datetime import datetime
 from quik import FileLoader
 from db import *
-
+from controller import generateHTML
 loader = FileLoader('')
 
 
@@ -45,7 +45,7 @@ def populate_data(template):
     return file_data
 
 
-def read_file(file, redir_param):
+def read_file(file, req_uri, redir_param):
 
     redirect = False
     path = "/"
@@ -60,7 +60,8 @@ def read_file(file, redir_param):
 
         if not redirect:
             template = loader.load_template(file)
-            file_data = populate_data(template, redir_param)
+            file_data = generateHTML(template, loader, req_uri)
+
         else:
             res = open('server/src/redirect.html', 'r+b')
             for i in range(get_size(file)):

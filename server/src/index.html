@@ -9,8 +9,8 @@
     Facebook Feed
     <div class="feed" id="feed">
       <ul>
-        #for @post in @feed:
-        <li>@post</li>
+        #for @post in @data:
+        <li>@post.post_body</li>
         #end
       </ul>
     </div>
