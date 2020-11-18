@@ -27,8 +27,7 @@ def init_server(port):
 
     while True:
         req_sock, req_addr = sock.accept()
-        handle_req(req_sock)
-        # thread = Thread(target=handle_req, args=(req_sock,)).start()
+        thread = Thread(target=handle_req, args=(req_sock,)).start()
         print('Running Threads: ', enumerate())
 
 
