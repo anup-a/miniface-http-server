@@ -21,13 +21,14 @@ def init_server(port):
     listen_addr = '', port
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(listen_addr)
-    sock.listen(5)
+    sock.listen(20)
 
     print("Server listening ....")
 
     while True:
         req_sock, req_addr = sock.accept()
-        thread = Thread(target=handle_req, args=(req_sock,)).start()
+        handle_req(req_sock)
+        # thread = Thread(target=handle_req, args=(req_sock,)).start()
         print('Running Threads: ', enumerate())
 
 

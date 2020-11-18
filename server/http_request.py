@@ -48,6 +48,7 @@ def handle_response(res_sock, req_uri, redir_param={}):
     file_size = get_size(file)
     http_res = gen_status(file_size)
 
+    print(req_uri, file_size)
     http_body = b'\r\n'
 
     http_body += read_file(file, req_uri, redir_param)
@@ -60,3 +61,5 @@ def handle_response(res_sock, req_uri, redir_param={}):
     http_res += http_body
 
     res_sock.sendall(http_res)
+    print("sent !!!!!")
+    # res_sock.send("recieved".encode("utf-8"))
