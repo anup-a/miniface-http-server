@@ -1,0 +1,107 @@
+/* Fonts */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+
+
+/* Base Styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #F9FAFB;
+}
+
+input:focus, input:hover {
+    outline: none;
+}
+
+
+/* Navbar Styles */
+.nav, .nav-brand, .nav-brand .nav-search, .nav-btns, .nav-menu {
+    display: flex;
+    align-items: center;
+}
+
+.nav {
+    background: white;
+    padding: 1rem;
+    /* border-radius: 4rem;
+    margin: 2rem 1rem; */
+    justify-content: space-between;
+    box-shadow:0 0 15px 0 rgba(0,0,0,0.03), 0 20px 40px 10px rgba(224,224,224,0.2);
+}
+
+.nav-brand {
+    width: 40%;
+}
+
+.nav-brand .nav-logo{
+    border-radius: 50%;
+    background-color: #EBF2FF;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 2rem;
+}
+
+.nav-brand .nav-search {
+    position: relative;
+    height: 50px;
+    width: 70%;
+}
+
+.nav-brand .nav-search input{
+    border-radius: 2rem;
+    background-color: #F7F7F7;
+    padding: 0.9rem;
+    color: rgb(236, 236, 236);
+    outline: none;
+    border: none;
+    font-weight: 600;
+    font-size: 0.75rem; 
+    letter-spacing: 0.2mm;  
+    width: 100%;
+    /* position: absolute; */
+}
+
+.nav-brand .nav-search input::placeholder{
+    color: gray;
+}
+
+.nav-brand .nav-search img {
+    position: absolute;
+    right: 0;
+    margin-right: 1rem;
+    width: 1rem;
+}
+
+/* Nav Buttons */
+
+.nav-btns {
+    width: 30%;
+    justify-content: start;
+}
+
+.nav-btns div, .nav-menu div {
+    margin: 0 1rem;
+}
+
+.nav-btns .nav-btn-1 {
+    border-radius: 50%;
+    background-color: #EBF2FF;
+    width: 30px;
+    height:30px;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.nav-menu {
+    width: 10%;
+    justify-content: space-evenly;
+    margin-right: 3rem;
+}
