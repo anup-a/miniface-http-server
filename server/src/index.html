@@ -9,6 +9,7 @@
   <body>
     #include( "server/src/nav.html" )
     <div class="feed" id="feed">
+      #include( "server/src/addpost.html" )
       <ul>
         #for @post in @data:
         <li>@post.post_body</li>
