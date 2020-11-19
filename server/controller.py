@@ -38,7 +38,7 @@ def login(user_name, password):
     c = cur.fetchone()
     # posts = []
     if c:
-        if c[2] == password:
+        if c[3] == password:
             return((1, c[0]))
         else:
             return((0, 'The password was wrong.'))

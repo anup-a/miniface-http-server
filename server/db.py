@@ -25,12 +25,12 @@ def db_init2():
         con = sqlite3.connect('server/db/accounts.db')
         cur = con.cursor()
         cur.execute(
-            "create table if not exists accounts('user_id' varchar(20) not null, 'user_name' varchar(20) not null, 'password' varchar(20) not null)")
+            "create table if not exists accounts('user_id' integer primary key autoincrement, 'Name' varchar(100) not null, 'user_name' varchar(20) UNIQUE, 'password' varchar(20) not null)")
         con.commit()
         con = sqlite3.connect('server/db/accounts.db')
         cur = con.cursor()
-        cur.execute("insert into accounts(user_id, user_name, password) values(?,?,?)",
-                    ('1', 'anup_22', 'hianup'))
+        cur.execute("insert into accounts(Name, user_name, password) values(?,?,?)",
+                    ('Anup Aglawe', 'anup_22', 'hianup'))
         con.commit()
     return "success"
 
