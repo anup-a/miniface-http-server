@@ -4,6 +4,7 @@ from os.path import join
 from helpers import *
 from response import *
 
+
 def add_post(post_id, post_body, user_id):
     con = sqlite3.connect('server/db/posts.db')
     cur = con.cursor()
@@ -37,7 +38,7 @@ def login(user_name, password):
     c = cur.fetchone()
     # posts = []
     if c:
-        if c[2]==password:
+        if c[2] == password:
             return((1, c[0]))
         else:
             return((0, 'The password was wrong.'))
@@ -52,9 +53,8 @@ def handleDBPushAPI(res_sock, req_uri, body):
         add_post('2', body["name"], '1')
         print("Done. Added")
         return req_uri
-        
-    if req_uri=='/login_page.html' or req_uri == 'login_page.html':
-        print(body)
+
+    if req_uri == '/login_page.html' or req_uri == 'login_page.html':
         res = login(body['username'], body['password'])
         if res[0]:
             print("authenticated.")
@@ -65,6 +65,5 @@ def handleDBPushAPI(res_sock, req_uri, body):
 
 
 def addtoDB(res_sock, req_uri, body):
-    print(req_uri, body)
     parsedText = body_parser(body)
     handleDBPushAPI(res_sock, req_uri, parsedText)
