@@ -83,6 +83,8 @@ def handleDBFetchAPI(req_uri):
     if req_uri in ['/index.html', '', '/', "index.html"]:
         return get_posts()
 
+    if req_uri in ['/users.html', "users.html"]:
+        return get_users()
 
 def get_posts():
     con = sqlite3.connect('server/db/posts.db')
@@ -97,3 +99,17 @@ def get_posts():
         x = dict(t)
         posts.append(x)
     return posts
+
+def get_users():
+    con = sqlite3.connect('server/db/accounts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("select Name, user_name from accounts")
+
+    c = cur.fetchall()
+
+    accounts = []
+    for t in c:
+        x = dict(t)
+        accounts.append(x)
+    return accounts

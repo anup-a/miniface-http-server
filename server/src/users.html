@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles/index.css" />
+  </head>
+  <body>
+    #include( "server/src/nav.html" )
+    <ul>
+      #for @acc in @data:
+      <li>@acc.Name, @acc.user_name</li>
+      #end
+    </ul>
+    <hr />
+  </body>
+  <script>
+    // Workaround for last unrecieved response
+    setTimeout(() => {
+      var request = new XMLHttpRequest();
+      request.open("GET", "/assets/dummy.svg", true);
+
+      request.onload = function () {
+        if (this.status >= 200 && this.status < 400) {
+          var data = JSON.parse(this.response);
+        } else {
+          console.log("Some files not loaded");
+        }
+      };
+
+      request.onerror = function () {
+        console.log("Request refused.");
+      };
+
+      request.send();
+    }, 2000);
+  </script>
+</html>

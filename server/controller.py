@@ -36,7 +36,6 @@ def login(user_name, password):
     cur.execute("select * from accounts where user_name=?", (user_name,))
 
     c = cur.fetchone()
-    # posts = []
     if c:
         if c[3] == password:
             return((1, c[0]))
@@ -44,8 +43,21 @@ def login(user_name, password):
             return((0, 'The password was wrong.'))
     else:
         return((0, 'The username does not exist.'))
-    # return posts
 
+def signup(name, user_name, password):
+    con = sqlite3.connect('server/db/accounts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    try:
+        cur.execute("insert into accounts(Name, user_name, password) values(?,?,?)",
+                        (name, user_name, password))
+        con.commit()
+        cur.execute("select * from accounts where user_name=?", (user_name,))
+        c = cur.fetchone()
+        return(1, c[0])
+    except Exception as e:
+        con.commit()
+        return(0, e)
 
 def handleDBPushAPI(res_sock, req_uri, body):
     if req_uri == '/addpost.html' or req_uri == 'addpost.html':
@@ -59,6 +71,15 @@ def handleDBPushAPI(res_sock, req_uri, body):
         res = login(body['username'], body['password'])
         if res[0]:
             print("authenticated.")
+            handle_redirect(res_sock, user_id=res[1])
+        else:
+            print(res[1])
+            handle_redirect(res_sock)
+    
+    if req_uri=='/signup_page.html' or req_uri == 'signup_page.html':
+        res = signup(body['name'], body['username'], body['password'])
+        if res[0]:
+            print("User inserted")
             handle_redirect(res_sock, user_id=res[1])
         else:
             print(res[1])
