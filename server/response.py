@@ -2,7 +2,7 @@ from os.path import join
 from helpers import *
 from db import *
 
-def handle_redirect(res_sock, req_uri='/index.html', user_id=None):
+def handle_redirect(res_sock, req_uri='index.html', user_id=None):
     redir_param = {
         "redirect": True,
         "path": req_uri,
@@ -12,7 +12,6 @@ def handle_redirect(res_sock, req_uri='/index.html', user_id=None):
 
 
 def handle_response(res_sock, req_uri, redir_param={}):
-
     if req_uri == '':
         req_uri = 'index.html'
 
