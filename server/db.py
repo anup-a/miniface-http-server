@@ -1,8 +1,6 @@
 import sqlite3
 import os
 import json
-from body_parser import body_parser
-
 
 def db_init():
     if(os.path.exists("server/db/posts.db")):
@@ -20,6 +18,21 @@ def db_init():
         con.commit()
     return "success"
 
+def db_init2():
+    if(os.path.exists("server/db/accounts.db")):
+        db = ''
+    else:
+        con = sqlite3.connect('server/db/accounts.db')
+        cur = con.cursor()
+        cur.execute(
+            "create table if not exists accounts('user_id' varchar(20) not null, 'user_name' varchar(20) not null, 'password' varchar(20) not null)")
+        con.commit()
+        con = sqlite3.connect('server/db/accounts.db')
+        cur = con.cursor()
+        cur.execute("insert into accounts(user_id, user_name, password) values(?,?,?)",
+                    ('1', 'anup_22', 'hianup'))
+        con.commit()
+    return "success"
 
 # initialize JSON DATABASE
 db_f = open('server/db/data.json')
@@ -27,3 +40,4 @@ database = json.load(db_f)
 
 # initialize SQLITE DATABASE
 db_init()
+db_init2()

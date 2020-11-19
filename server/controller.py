@@ -1,6 +1,8 @@
 import sqlite3
 from body_parser import body_parser
-
+from os.path import join
+from helpers import *
+from response import *
 
 def add_post(post_id, post_body, user_id):
     con = sqlite3.connect('server/db/posts.db')
@@ -10,27 +12,6 @@ def add_post(post_id, post_body, user_id):
     con.commit()
     return "success"
 
-
-def get_posts():
-    con = sqlite3.connect('server/db/posts.db')
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    cur.execute("select * from posts")
-
-    c = cur.fetchall()
-    print(c)
-
-    posts = []
-    for t in c:
-        x = dict(t)
-        posts.append(x)
-
-    return posts
-
-# legacy method
-
-
-def update_to_db(body):
     parsedText = body_parser(body)
     database["feed"].append(parsedText["name"])
 
@@ -47,26 +28,43 @@ def populate_data(template):
     return file_data
 
 
-def handleDBFetchAPI(req_uri):
-    if req_uri in ['/index.html', '', '/', "index.html"]:
-        return get_posts()
+def login(user_name, password):
+    con = sqlite3.connect('server/db/accounts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("select * from accounts where user_name=?", (user_name,))
+
+    c = cur.fetchone()
+    # posts = []
+    if c:
+        if c[2]==password:
+            return((1, c[0]))
+        else:
+            return((0, 'The password was wrong.'))
+    else:
+        return((0, 'The username does not exist.'))
+    # return posts
 
 
-def handleDBPushAPI(req_uri, body):
+def handleDBPushAPI(res_sock, req_uri, body):
     if req_uri == '/addpost.html' or req_uri == 'addpost.html':
         print("Adding to SQLite Database.....")
         add_post('2', body["name"], '1')
         print("Done. Added")
+        return req_uri
+        
+    if req_uri=='/login_page.html' or req_uri == 'login_page.html':
+        print(body)
+        res = login(body['username'], body['password'])
+        if res[0]:
+            print("authenticated.")
+            handle_redirect(res_sock, user_id=res[1])
+        else:
+            print(res[1])
+            handle_redirect(res_sock)
 
 
-def addtoDB(req_uri, body):
+def addtoDB(res_sock, req_uri, body):
     print(req_uri, body)
     parsedText = body_parser(body)
-    handleDBPushAPI(req_uri, parsedText)
-
-
-def generateHTML(template, loader, req_uri):
-    data = handleDBFetchAPI(req_uri)
-    file_data = template.render({'data': data}, loader=loader).encode('utf-8')
-
-    return file_data
+    handleDBPushAPI(res_sock, req_uri, parsedText)
