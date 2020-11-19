@@ -26,4 +26,4 @@ def handle_POST(res_sock, req_line, req_headers):
     addtoDB(res_sock, req_uri, body)
 
     # Redirect to / or /index.html
-    handle_redirect(res_sock, '')
+    # handle_redirect(res_sock, '')

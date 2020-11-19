@@ -13,20 +13,20 @@ def add_post(post_id, post_body, user_id):
     con.commit()
     return "success"
 
-    parsedText = body_parser(body)
-    database["feed"].append(parsedText["name"])
+    # parsedText = body_parser(body)
+    # database["feed"].append(parsedText["name"])
 
-    with open('server/db/data.json', 'w') as f:
-        json.dump(database, f)
+    # with open('server/db/data.json', 'w') as f:
+    #     json.dump(database, f)
 
 # legacy method
 
 
-def populate_data(template):
-    file_data = template.render(
-        {'feed': database["feed"]}, loader=loader).encode('utf-8')
+# def populate_data(template):
+#     file_data = template.render(
+#         {'feed': database["feed"]}, loader=loader).encode('utf-8')
 
-    return file_data
+#     return file_data
 
 
 def login(user_name, password):
@@ -52,9 +52,10 @@ def handleDBPushAPI(res_sock, req_uri, body):
         print("Adding to SQLite Database.....")
         add_post('2', body["name"], '1')
         print("Done. Added")
-        return req_uri
-
-    if req_uri == '/login_page.html' or req_uri == 'login_page.html':
+        handle_redirect(res_sock)
+        
+    if req_uri=='/login_page.html' or req_uri == 'login_page.html':
+        print(body)
         res = login(body['username'], body['password'])
         if res[0]:
             print("authenticated.")
