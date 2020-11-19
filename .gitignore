@@ -1,2 +1,2 @@
 *.db
-server\test.py
+server/test.py
