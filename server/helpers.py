@@ -3,7 +3,6 @@ from mimetypes import guess_type
 from datetime import datetime
 from quik import FileLoader
 from db import *
-# from controller import generateHTML
 loader = FileLoader('')
 
 

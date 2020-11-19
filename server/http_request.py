@@ -1,6 +1,6 @@
 from body_parser import body_parser
 from controller import *
-
+from response import *
 
 def handle_GET(res_sock, req_line):
     print("Fetching Response ...")

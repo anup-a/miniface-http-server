@@ -1,8 +1,6 @@
 import sqlite3
 import os
 import json
-from body_parser import body_parser
-
 
 def db_init():
     if(os.path.exists("server/db/posts.db")):
