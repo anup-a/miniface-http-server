@@ -1,6 +1,8 @@
+import sqlite3
 from os.path import join
 from helpers import *
 from db import *
+
 
 def handle_redirect(res_sock, req_uri='index.html', user_id=None):
     redir_param = {
@@ -33,6 +35,7 @@ def handle_response(res_sock, req_uri, redir_param={}):
 
     res_sock.sendall(http_res)
 
+
 def read_file(file, req_uri, redir_param):
 
     redirect = False
@@ -45,10 +48,14 @@ def read_file(file, req_uri, redir_param):
     file_data = b''
 
     if get_size(file):
-
         if not redirect:
-            template = loader.load_template(file)
-            file_data = generateHTML(template, loader, req_uri)
+            if file.endswith('.html'):
+                template = loader.load_template(file)
+                file_data = generateHTML(template, loader, req_uri)
+            else:
+                res = open(file, 'r+b')
+                for i in range(get_size(file)):
+                    file_data += res.read()
 
         else:
             res = open('server/src/redirect.html', 'r+b')
@@ -64,15 +71,18 @@ def read_file(file, req_uri, redir_param):
 
     return file_data
 
+
 def generateHTML(template, loader, req_uri):
     data = handleDBFetchAPI(req_uri)
     file_data = template.render({'data': data}, loader=loader).encode('utf-8')
 
     return file_data
 
+
 def handleDBFetchAPI(req_uri):
     if req_uri in ['/index.html', '', '/', "index.html"]:
         return get_posts()
+
 
 def get_posts():
     con = sqlite3.connect('server/db/posts.db')
@@ -81,9 +91,9 @@ def get_posts():
     cur.execute("select * from posts")
 
     c = cur.fetchall()
-    print(c)
 
     posts = []
     for t in c:
         x = dict(t)
         posts.append(x)
+    return posts

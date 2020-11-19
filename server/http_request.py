@@ -2,6 +2,7 @@ from body_parser import body_parser
 from controller import *
 from response import *
 
+
 def handle_GET(res_sock, req_line):
     print("Fetching Response ...")
     http_req, req_uri, protocol_version = req_line
@@ -26,5 +27,3 @@ def handle_POST(res_sock, req_line, req_headers):
 
     # Redirect to / or /index.html
     # handle_redirect(res_sock, '')
-
-

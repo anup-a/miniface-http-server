@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facebook | Add Post</title>
-</head>
-<body>
-    <form method="POST" action="/addpost.html" id="add-post">
-        <label for="name">Enter your name : </lablel>
-        <input name="name" placeholder="type here ..." />
-        <button>Submit</button>
-    </form>
-</body>
-</html>
+<link rel="stylesheet" href="./styles/add.css" />
+<div id="add-post">
+  <div class="form-heading">
+    <img src="./assets/Edit.svg" />
+    <p>Create Post</p>
+  </div>
+  <form method="POST" action="/addpost.html" id="add-post-form">
+    <input name="name" placeholder="What's on your mind, Anup?" />
+    <button>Submit</button>
+  </form>
+</div>
