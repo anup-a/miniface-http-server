@@ -78,13 +78,14 @@ def generateHTML(template, loader, req_uri):
 
     return file_data
 
-
 def handleDBFetchAPI(req_uri):
     if req_uri in ['/index.html', '', '/', "index.html"]:
         return get_posts()
 
     if req_uri in ['/users.html', "users.html"]:
         return get_users()
+    if req_uri in ['/friends.html', "friends.html"]:
+        return get_friends(3)
 
 def get_posts():
     con = sqlite3.connect('server/db/posts.db')
@@ -113,3 +114,19 @@ def get_users():
         x = dict(t)
         accounts.append(x)
     return accounts
+
+def get_friends(user_id):
+    con = sqlite3.connect('server/db/friendship.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    x=user_id
+    cur.execute('select user_id2 from friendship where user_id1=? and status="friends"',(x,))
+    print(cur)
+    c = cur.fetchall()
+
+    friends = []
+    for friend in c:
+        dic = dict(friend)
+        friends.append(dic)
+    print(friends)
+    return friends
