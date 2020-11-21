@@ -13,11 +13,21 @@
       align-items: center;
     "
   >
+    #if(@token):
+    <div>Loading .....</div>
+    #else
     <div>Redirecting .....</div>
+    #end
+    <hr />
+    #if(@token)
+    <script>
+      window.localStorage.setItem("token", "@token");
+    </script>
+    #end
     <script type="text/javascript">
       setTimeout(function () {
         window.location.href = "@path";
-      }, 1000);
+      }, 200);
     </script>
   </body>
 </html>

@@ -64,7 +64,7 @@ def read_file(file, req_uri, redir_param):
             file = 'server/src/redirect.html'
             template = loader.load_template(file)
             file_data = template.render(
-                {'path': path}, loader=loader).encode('utf-8')
+                {'path': path, 'token': token.decode('utf-8')}, loader=loader).encode('utf-8')
 
         """
         For Static files

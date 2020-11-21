@@ -47,7 +47,7 @@ def login(user_name, password):
             if ph.verify(c[3], password):
                 print("password verified")
                 accessToken = genAccessToken(c)
-                return((1, c[0]))
+                return((1, c[0], accessToken))
             else:
                 return((0, 'The password was wrong.'))
         except:
@@ -84,7 +84,8 @@ def handleDBPushAPI(res_sock, req_uri, body):
         res = login(body['username'], body['password'])
         if res[0] == 1:
             print("authenticated.")
-            handle_redirect(res_sock, user_id=res[1])
+            token = res[2]
+            handle_redirect(res_sock, user_id=res[1], token=token)
         else:
             print(res[1])
             handle_redirect(res_sock, req_uri="login_page.html")
