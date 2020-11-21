@@ -1,6 +1,10 @@
 import sqlite3
 import os
 import json
+from argon2 import PasswordHasher
+
+ph = PasswordHasher()
+
 
 def db_init():
     if(os.path.exists("server/db/posts.db")):
@@ -17,8 +21,8 @@ def db_init():
                     ('1', 'Chilling at Beach with 5 Others. At Louisiana', '1'))
         con.commit()
 
-        
     return "success"
+
 
 def db_init2():
     if(os.path.exists("server/db/accounts.db")):
@@ -27,23 +31,25 @@ def db_init2():
         con = sqlite3.connect('server/db/accounts.db')
         cur = con.cursor()
         cur.execute(
-            "create table if not exists accounts('user_id' integer primary key autoincrement, 'Name' varchar(100) not null, 'user_name' varchar(20) UNIQUE, 'password' varchar(20) not null)")
+            "create table if not exists accounts('user_id' integer primary key autoincrement, 'Name' varchar(100) not null, 'user_name' varchar(20) UNIQUE, 'password' varchar(100) not null)")
         con.commit()
         con = sqlite3.connect('server/db/accounts.db')
         cur = con.cursor()
+        hashedPassword = ph.hash('hianup')
         cur.execute("insert into accounts(Name, user_name, password) values(?,?,?)",
-                    ('Anup Aglawe', 'anup_22', 'hianup'))
+                    ('Anup Aglawe', 'anup_22', hashedPassword))
         cur.execute("insert into accounts(Name, user_name, password) values(?,?,?)",
-                    ('A', 'A', 'hianup'))
+                    ('A', 'A', hashedPassword))
         cur.execute("insert into accounts(Name, user_name, password) values(?,?,?)",
-                    ('B', 'B', 'hianup'))
+                    ('B', 'B', hashedPassword))
         cur.execute("insert into accounts(Name, user_name, password) values(?,?,?)",
-                    ('C', 'C', 'hianup'))
+                    ('C', 'C', hashedPassword))
         cur.execute("insert into accounts(Name, user_name, password) values(?,?,?)",
-                    ('D', 'D', 'hianup'))
-        
+                    ('D', 'D', hashedPassword))
+
         con.commit()
     return "success"
+
 
 def db_init3():
     if(os.path.exists("server/db/friendship.db")):
@@ -57,22 +63,21 @@ def db_init3():
         con = sqlite3.connect('server/db/friendship.db')
         cur = con.cursor()
         cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
-                    (1, 2,"pending"))
+                    (1, 2, "pending"))
         cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
-                    (3, 4,"friends"))
+                    (3, 4, "friends"))
         cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
-                    (4, 3,"friends"))
+                    (4, 3, "friends"))
         cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
-                    (2, 3,"friends"))
+                    (2, 3, "friends"))
         cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
-                    (3, 2,"friends"))
+                    (3, 2, "friends"))
         cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
-                    (5, 3,"friends"))
+                    (5, 3, "friends"))
         cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
-                    (3, 5,"friends"))
+                    (3, 5, "friends"))
         con.commit()
     return "success for friends"
-
 
 
 # initialize JSON DATABASE
