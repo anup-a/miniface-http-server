@@ -1,40 +1,55 @@
-        
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Login</title>
-        <link rel="stylesheet" href="./static/login.css">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
-    </head>
-    <body>
-        <div class="container" id="container">
-            <div class="form-container sign-in-container">
-                <!-- <form action="{{ url_for('login') }}" method = "POST"> -->
-                <form method="POST" action="/login_page.html" id="login">
-                    <div style="width: 16% ;height: 16%; padding-bottom: 10px;">
-                        <img src="./static/fb1.png" style="width: 100%; height: 100%;">
-                    </div>
-                    <label for="username"></label>
-                    <input type="text" name="username" placeholder="Username" id="username" required>
-                    <label for="password"></label>
-                    <input type="password" name="password" placeholder="Password" id="password" required>
-                    <input type="submit" value="Login">
-                    <!-- <input name="username" type="username">
+  <head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+    <link rel="stylesheet" href="./static/login.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+    />
+  </head>
+  <body>
+    <div class="container" id="container">
+      <div class="form-container sign-in-container">
+        <!-- <form action="{{ url_for('login') }}" method = "POST"> -->
+        <form method="POST" action="/login_page.html" id="login">
+          <div style="width: 16%; height: 16%; padding-bottom: 10px">
+            <img src="./static/fb1.png" style="width: 100%; height: 100%" />
+          </div>
+          <label for="username"></label>
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            id="username"
+            required
+          />
+          <label for="password"></label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            id="password"
+            required
+          />
+          <input type="submit" value="Login" />
+          <!-- <input name="username" type="username">
         			<input name="password" type="password">
         			<button type="submit">Log in</button> -->
-                </form>
+        </form>
+      </div>
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-panel overlay-right">
+            <h1>Welcome from Mini-Facebook</h1>
+            <div id="imgbg">
+              <img src="./static/fb.png" style="width: 80%; height: 80%" />
             </div>
-            <div class="overlay-container">
-                <div class="overlay">
-                    <div class="overlay-panel overlay-right">
-                        <h1>Welcome from Mini-Facebook</h1>
-                        <div id="imgbg">
-                        <img src= './static/fb.png' style="width: 80%; height: 80%;" >
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-    </body>
+      </div>
+    </div>
+  </body>
+  #include( "server/src/bugFix.html" )
 </html>

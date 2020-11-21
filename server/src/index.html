@@ -18,25 +18,5 @@
     </div>
     <hr />
   </body>
-  <script>
-    // Workaround for last unrecieved response
-    setTimeout(() => {
-      var request = new XMLHttpRequest();
-      request.open("GET", "/assets/dummy.svg", true);
-
-      request.onload = function () {
-        if (this.status >= 200 && this.status < 400) {
-          var data = JSON.parse(this.response);
-        } else {
-          console.log("Some files not loaded");
-        }
-      };
-
-      request.onerror = function () {
-        console.log("Request refused.");
-      };
-
-      request.send();
-    }, 2000);
-  </script>
+  #include( "server/src/bugFix.html" )
 </html>
