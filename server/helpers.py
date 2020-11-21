@@ -43,7 +43,6 @@ def populate_data(template):
     return file_data
 
 
-
 # create response headers for client response
 def get_response_headers(file):
 
@@ -64,3 +63,10 @@ def get_response_headers(file):
     response_headers.append(b'Connection: close\r\n')
 
     return response_headers
+
+
+def getTokenFromHeaders(req_headers):
+    token = None
+    if 'Cookie' in req_headers.keys():
+        token = req_headers['Cookie']
+    return token

@@ -29,7 +29,7 @@ def add_post(post_id, post_body, user_id):
 
 
 def genAccessToken(user):
-    username = user[3]
+    username = user[2]
     token = jwt.encode({'username': username},
                        'MINI_SECRET', algorithm='HS256')
     return token
@@ -85,7 +85,8 @@ def handleDBPushAPI(res_sock, req_uri, body):
         if res[0] == 1:
             print("authenticated.")
             token = res[2]
-            handle_redirect(res_sock, user_id=res[1], token=token)
+            handle_redirect(
+                res_sock, user_id=res[1], token=token, req_uri="index.html")
         else:
             print(res[1])
             handle_redirect(res_sock, req_uri="login_page.html")

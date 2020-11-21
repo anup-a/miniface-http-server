@@ -34,12 +34,13 @@ def init_server(port):
 def handle_req(req_sock):
     req_line, req_headers = read_http_request(req_sock)
     http_req, resource, protocol_version = req_line
+    token = getTokenFromHeaders(req_headers)
 
     if http_req == 'GET':
-        handle_GET(req_sock, req_line)
+        handle_GET(req_sock, req_line, token)
 
     elif http_req == 'POST':
-        handle_POST(req_sock, req_line, req_headers)
+        handle_POST(req_sock, req_line, req_headers, token)
 
     else:
         print(f'{http_req} Not Implemented Yet')

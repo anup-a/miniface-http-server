@@ -36,7 +36,7 @@ def handle_response(res_sock, req_uri, redir_param={}):
     res_sock.sendall(http_res)
 
 
-def read_file(file, req_uri, redir_param):
+def read_file(file, req_uri, redir_param={}):
 
     redirect = False
     path = "/"
@@ -61,10 +61,23 @@ def read_file(file, req_uri, redir_param):
                     file_data += res.read()
 
         else:
-            file = 'server/src/redirect.html'
-            template = loader.load_template(file)
-            file_data = template.render(
-                {'path': path, 'token': token.decode('utf-8')}, loader=loader).encode('utf-8')
+
+            if token != None:
+                template = loader.load_template(file)
+                file_data = generateHTML(template, loader, req_uri, token)
+
+            else:
+                file = 'server/src/redirect.html'
+                template = loader.load_template(file)
+                strToken = None
+
+                if token and type(token) != str:
+                    strToken = token.decode('utf-8')
+                else:
+                    strToke = token
+
+                file_data = template.render(
+                    {'path': path, 'token': strToken}, loader=loader).encode('utf-8')
 
         """
         For Static files
@@ -122,6 +135,19 @@ def get_users():
         x = dict(t)
         accounts.append(x)
     return accounts
+
+
+def get_user(user_name):
+    con = sqlite3.connect('server/db/accounts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute(
+        "select Name, user_name from accounts where user_name=?", (user_name,))
+
+    c = cur.fetchone()
+
+    if c:
+        return c
 
 
 def get_friends(user_id):

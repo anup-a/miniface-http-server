@@ -20,4 +20,10 @@
     <p>@token</p>
   </body>
   #include( "server/src/bugFix.html" )
+  <script>
+    token = window.localStorage.getItem("token");
+    if (token) {
+      document.cookie = token;
+    }
+  </script>
 </html>

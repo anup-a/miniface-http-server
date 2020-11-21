@@ -15,15 +15,14 @@
   >
     #if(@token):
     <div>Loading .....</div>
+    <script>
+      window.localStorage.setItem("token", "@token");
+      document.cookie = "@token";
+    </script>
     #else
     <div>Redirecting .....</div>
     #end
     <hr />
-    #if(@token)
-    <script>
-      window.localStorage.setItem("token", "@token");
-    </script>
-    #end
     <script type="text/javascript">
       setTimeout(function () {
         window.location.href = "@path";
