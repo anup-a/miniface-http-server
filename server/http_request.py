@@ -5,7 +5,9 @@ from response import *
 
 def handle_GET(res_sock, req_line):
     print("Fetching Response ...")
+    
     http_req, req_uri, protocol_version = req_line
+    print(req_uri,req_line)
     req_uri = req_uri[1:]
     handle_response(res_sock, req_uri)
 

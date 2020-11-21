@@ -12,20 +12,14 @@ def add_post(post_id, post_body, user_id):
                 (post_id, post_body, user_id))
     con.commit()
     return "success"
-
     # parsedText = body_parser(body)
     # database["feed"].append(parsedText["name"])
-
     # with open('server/db/data.json', 'w') as f:
     #     json.dump(database, f)
-
 # legacy method
-
-
 # def populate_data(template):
 #     file_data = template.render(
 #         {'feed': database["feed"]}, loader=loader).encode('utf-8')
-
 #     return file_data
 
 
