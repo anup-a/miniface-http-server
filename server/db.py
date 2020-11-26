@@ -16,8 +16,6 @@ def db_init():
         cur.execute("insert into posts(post_id, post_body, user_id) values(?,?,?)",
                     ('1', 'Chilling at Beach with 5 Others. At Louisiana', '1'))
         con.commit()
-
-        
     return "success"
 
 def db_init2():
@@ -72,8 +70,6 @@ def db_init3():
                     (3, 5,"friends"))
         con.commit()
     return "success for friends"
-
-
 
 # initialize JSON DATABASE
 db_f = open('server/db/data.json')

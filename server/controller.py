@@ -52,6 +52,40 @@ def signup(name, user_name, password):
     except Exception as e:
         con.commit()
         return(0, e)
+def add_friend(user_id,friend_user_id):
+    friend_user_id=int(friend_user_id)
+    con = sqlite3.connect('server/db/friendship.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    print("Reached in add_friends")
+    cur.execute('select user_id2 from friendship where user_id1=? and status="friends"',(user_id,))
+    c = cur.fetchall()
+    friends = []
+    for friend in c:
+        dic = dict(friend)
+        friends.append(dic)
+    if friend_user_id in friends:
+        print("Already friends")
+        return 2
+    
+    cur.execute('select user_id2 from friendship where user_id1=? and status="pending"',(user_id,))
+    c = cur.fetchall()
+    pending = []
+    for friend in c:
+        dic = dict(friend)
+        pending.append(dic)
+    cur.execute('select user_id1 from friendship where user_id2=? and status="pending"',(user_id,))
+    c = cur.fetchall()
+    reverse_pending = []
+    for friend in c:
+        dic = dict(friend)
+        reverse_pending.append(dic)
+
+    cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
+                        (user_id,friend_user_id,"pending"))
+    con.commit()
+    return 1
+
 
 def handleDBPushAPI(res_sock, req_uri, body):
     if req_uri == '/addpost.html' or req_uri == 'addpost.html':
@@ -78,6 +112,17 @@ def handleDBPushAPI(res_sock, req_uri, body):
         else:
             print(res[1])
             handle_redirect(res_sock)
+
+    if req_uri=='/add_friends.html' or req_uri == 'add_friends.html':
+        print(body)
+        user_id=3
+        res = add_friend(user_id,body['user_id'])
+        # if res[0]:
+        #     print("authenticated.")
+        #     handle_redirect(res_sock, user_id=res[1])
+        # else:
+        #     print(res[1])
+        handle_redirect(res_sock,req_uri="add_friends.html")
 
 
 def addtoDB(res_sock, req_uri, body):
