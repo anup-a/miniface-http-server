@@ -11,6 +11,7 @@ def handle_redirect(res_sock, req_uri='index.html', user_id=None, token=None):
         "user_id": user_id,
         "token": token,
     }
+    print(redir_param)
     handle_response(res_sock, req_uri, redir_param)
 
 
@@ -48,6 +49,7 @@ def read_file(file, req_uri, redir_param={}):
 
     if 'token' in redir_param.keys():
         token = redir_param['token']
+    
     file_data = b''
 
     if get_size(file):
@@ -61,20 +63,19 @@ def read_file(file, req_uri, redir_param={}):
                     file_data += res.read()
 
         else:
+            strToken = None
+            if token and type(token) != str:
+                strToken = token.decode('utf-8')
+            else:
+                strToken = token
 
             if token != None:
                 template = loader.load_template(file)
-                file_data = generateHTML(template, loader, req_uri, token)
+                file_data = generateHTML(template, loader, req_uri, token=strToken)
 
             else:
                 file = 'server/src/redirect.html'
                 template = loader.load_template(file)
-                strToken = None
-
-                if token and type(token) != str:
-                    strToken = token.decode('utf-8')
-                else:
-                    strToke = token
 
                 file_data = template.render(
                     {'path': path, 'token': strToken}, loader=loader).encode('utf-8')

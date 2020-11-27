@@ -35,7 +35,9 @@ def handle_req(req_sock):
     req_line, req_headers = read_http_request(req_sock)
     http_req, resource, protocol_version = req_line
     token = getTokenFromHeaders(req_headers)
-
+    # print(req_headers)
+    # print("//////////")
+    # print("//////////")
     if http_req == 'GET':
         handle_GET(req_sock, req_line, token)
 

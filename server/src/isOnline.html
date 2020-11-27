@@ -1,0 +1,24 @@
+<script>
+  token = window.localStorage.getItem("token");
+
+  if (token) {
+    var request = new XMLHttpRequest();
+    request.open("GET", "/online", true);
+
+    request.onload = function () {
+      if (this.status >= 200 && this.status < 400) {
+        var data = JSON.parse(this.response);
+      } else {
+        console.log("User is offline.");
+      }
+    };
+
+    request.onerror = function () {
+      console.log("Request refused.");
+    };
+
+    setInterval(() => {
+      request.send();
+    }, 4000);
+  }
+</script>

@@ -1,9 +1,16 @@
 import sqlite3
 import os
 import json
+from persistqueue import sqlqueue
 from argon2 import PasswordHasher
 
 ph = PasswordHasher()
+
+# def queue_init():
+#     # cdir = os.getcwd()
+#     # path = os.path.join(cdir, '/server/db/')
+#     onlineQueue = sqlqueue.UniqueQ('server/db', auto_commit="true")
+#     return onlineQueue
 
 
 def db_init():
@@ -13,12 +20,20 @@ def db_init():
         con = sqlite3.connect('server/db/posts.db')
         cur = con.cursor()
         cur.execute(
-            "create table if not exists posts('post_id' varchar(20) not null, 'post_body' varchar(5000) not null, 'user_id' varchar(20) not null)")
+            "create table if not exists posts('post_id' integer primary key autoincrement, 'post_body' varchar(5000) not null, 'user_id' varchar(20) not null)")
         con.commit()
         con = sqlite3.connect('server/db/posts.db')
         cur = con.cursor()
-        cur.execute("insert into posts(post_id, post_body, user_id) values(?,?,?)",
-                    ('1', 'Chilling at Beach with 5 Others. At Louisiana', '1'))
+        cur.execute("insert into posts(post_body, user_id) values(?,?)",
+                    ('Chilling at Beach with 5 Others. At Louisiana', '1'))
+        cur.execute("insert into posts(post_body, user_id) values(?,?)",
+                    ('At the restaurant.', '2'))
+        cur.execute("insert into posts( post_body, user_id) values(?,?)",
+                    ('Hacking NASA with HTML, and 3 others. ', '3'))
+        cur.execute("insert into posts( post_body, user_id) values(?,?)",
+            ('Be kind to unkind people they need it the post. ', '4'))
+        cur.execute("insert into posts( post_body, user_id) values(?,?)",
+            ('At the Facebook company, we are constantly iterating, solving problems and working together to connect people all over the world', '5'))
         con.commit()
 
     return "success"
@@ -80,7 +95,7 @@ def db_init3():
     return "success for friends"
 
 
-# initialize JSON DATABASE
+# LEGACY::initialize JSON DATABASE
 db_f = open('server/db/data.json')
 database = json.load(db_f)
 
@@ -88,3 +103,6 @@ database = json.load(db_f)
 db_init()
 db_init2()
 db_init3()
+
+# # Queue initialization for online users
+# onlineQueue = queue_init()

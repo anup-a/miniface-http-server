@@ -4,6 +4,7 @@ from os.path import join
 from helpers import *
 from response import *
 from argon2 import PasswordHasher
+from db import onlineQueue
 import jwt
 
 ph = PasswordHasher()
@@ -86,7 +87,7 @@ def handleDBPushAPI(res_sock, req_uri, body):
             print("authenticated.")
             token = res[2]
             handle_redirect(
-                res_sock, user_id=res[1], token=token, req_uri="index.html")
+                res_sock=res_sock, user_id=res[1], token=token, req_uri="index.html")
         else:
             print(res[1])
             handle_redirect(res_sock, req_uri="login_page.html")
@@ -101,6 +102,63 @@ def handleDBPushAPI(res_sock, req_uri, body):
             handle_redirect(res_sock)
 
 
+def getPostsForUser(user_id):
+    friends = get_friends(user_id)
+
+    con = sqlite3.connect('server/db/posts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("select * from posts where user_name in ?", ( friends,))
+
+    c = cur.fetchall()
+
+    posts = []
+    for t in c:
+        x = dict(t)
+        posts.append(x)
+    return posts
+
+
 def addtoDB(res_sock, req_uri, body):
     parsedText = body_parser(body)
     handleDBPushAPI(res_sock, req_uri, parsedText)
+
+
+# def setOnline(user_id):
+#     onlineQueue.put(user_id)
+
+
+# def resetOnlineUsers():
+
+#     def deleteLastUser():
+#         if onlineQueue.size >= 1:
+#             onlineQueue.get()
+
+#     # Delete users every 10 sec
+#     set_interval(deleteLastUser, 10)
+
+
+# resetOnlineUsers()
+
+# setOnline('1')
+# setOnline('3')
+
+# def get_online_users():
+#     con = sqlite3.connect('server/db/data.db')
+#     con.row_factory = sqlite3.Row
+#     cur = con.cursor()
+#     cur.execute("select data from unique_queue_default")
+
+#     c = cur.fetchall()
+#     print(c)
+#     accounts = []
+#     for t in c:
+#         x = dict(t)
+#         accounts.append(x)
+#     return accounts
+
+# print("running")
+
+
+# a = get_online_users()
+# print(a)

@@ -3,6 +3,8 @@ from mimetypes import guess_type
 from datetime import datetime
 from quik import FileLoader
 from db import *
+import threading
+
 loader = FileLoader('')
 
 
@@ -70,3 +72,14 @@ def getTokenFromHeaders(req_headers):
     if 'Cookie' in req_headers.keys():
         token = req_headers['Cookie']
     return token
+
+
+
+def set_interval(func, sec):
+    def func_wrapper():
+        set_interval(func, sec)
+        func()
+    t = threading.Timer(sec, func_wrapper)
+    t.start()
+    return t
+

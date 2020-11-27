@@ -20,6 +20,13 @@
     <p>@token</p>
   </body>
   #include( "server/src/bugFix.html" )
+  <div></div>
+  #if(@token)
+  <script>
+    window.localStorage.setItem("token", "@token");
+    document.cookie = "@token";
+  </script>
+  #end
   <script>
     token = window.localStorage.getItem("token");
     if (token) {
