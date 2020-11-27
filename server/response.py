@@ -3,6 +3,8 @@ from os.path import join
 from helpers import *
 import controller
 
+END_OF_REQ = b'\r\n\r\n'
+
 def handle_redirect(res_sock, req_uri='index.html', user_id=None, token=None):
     redir_param = {
         "redirect": True,
@@ -12,12 +14,13 @@ def handle_redirect(res_sock, req_uri='index.html', user_id=None, token=None):
     }
     print(redir_param)
     handle_response(res_sock, req_uri, redir_param)
+    print('response done')
 
 
 def handle_response(res_sock, req_uri, redir_param={}):
     if req_uri == '':
         req_uri = 'index.html'
-
+    print('reached')
     file = join('server/src', req_uri)
     file_size = get_size(file)
     http_res = gen_status(file_size)
@@ -31,10 +34,9 @@ def handle_response(res_sock, req_uri, redir_param={}):
     for header in res_headers:
         http_res += header
 
-    http_res += http_body
-
+    http_res += http_body + END_OF_REQ
+    print(http_res)
     res_sock.sendall(http_res)
-
 
 def read_file(file, req_uri, redir_param={}):
 

@@ -20,6 +20,7 @@ def handle_GET(res_sock, req_line, token=None):
             else:
                 handle_redirect(res_sock, req_uri='login_page.html')
         else:
+            print('redirect')
             handle_redirect(res_sock, req_uri='login_page.html')
         # except:
         #     handle_redirect(res_sock, req_uri='login_page.html')

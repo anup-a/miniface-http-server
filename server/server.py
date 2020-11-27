@@ -12,7 +12,7 @@ END_OF_HEADERS = '\r\n'
 
 def main():
     # initialize server
-    init_server(port=8080)
+    init_server(port=8081)
 
 
 def init_server(port):
@@ -34,15 +34,17 @@ def init_server(port):
 def handle_req(req_sock):
     req_line, req_headers = read_http_request(req_sock)
     http_req, resource, protocol_version = req_line
+    print(req_headers)
     token = getTokenFromHeaders(req_headers)
-    # print(req_headers)
-    # print("//////////")
-    # print("//////////")
+    print("//////////")
+    print("//////////")
     if http_req == 'GET':
         handle_GET(req_sock, req_line, token)
+        req_sock.close()
 
     elif http_req == 'POST':
         handle_POST(req_sock, req_line, req_headers, token)
+        req_sock.close()
 
     else:
         print(f'{http_req} Not Implemented Yet')
@@ -58,9 +60,8 @@ def read_http_request(req_sock):
     while b'\r\n\r\n' not in http_req:
         msg = req_sock.recv(1)
         http_req += msg
-
     req_line, req_headers = http_req.decode('ASCII').split(END_OF_HEADERS, 1)
-
+    print(http_req.decode('ASCII'))
     # Ex - req-line = GET /hello.htm HTTP/1.1
     req_line = req_line.split(' ', 3)
 

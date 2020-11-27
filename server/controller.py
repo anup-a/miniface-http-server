@@ -35,7 +35,7 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
 
     if req_uri == '/addpost.html' or req_uri == 'addpost.html':
         print("Adding to SQLite Database.....")
-        add_post('2', body["name"], '1')
+        add_post(body["name"], token)
         print("Done. Added")
         handle_redirect(res_sock)
 
@@ -85,11 +85,12 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
 # Post CONTROLLERS
 # ////////////////
 
-def add_post(post_id, post_body, user_id):
+def add_post(post_body, token):
     con = sqlite3.connect('server/db/posts.db')
     cur = con.cursor()
-    cur.execute("insert into posts(post_id, post_body, user_id) values(?,?,?)",
-                (post_id, post_body, user_id))
+    _,_, user_id  = get_user(jwt.decode(token, 'MINI_SECRET', algorithm='HS256')['username'])
+    cur.execute("insert into posts(post_body, user_id) values(?,?)",
+                (post_body, user_id))
     con.commit()
     return "success"
 
@@ -195,7 +196,7 @@ def get_user(user_name):
     con.row_factory = sqlite3.Row
     cur = con.cursor()
     cur.execute(
-        "select Name, user_name from accounts where user_name=?", (user_name,))
+        "select Name, user_name, user_id from accounts where user_name=?", (user_name,))
 
     c = cur.fetchone()
 
