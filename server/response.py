@@ -95,6 +95,3 @@ def generateHTML(template, loader, req_uri, token=None):
         {'data': data, 'token': token}, loader=loader).encode('utf-8')
 
     return file_data
-
-    # if req_uri in ['/add_friends.html', "add_friends.html"]:
-    #     return add_friends()
