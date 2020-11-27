@@ -1,8 +1,7 @@
 import sqlite3
 from os.path import join
 from helpers import *
-from db import *
-
+import controller
 
 def handle_redirect(res_sock, req_uri='index.html', user_id=None, token=None):
     redir_param = {
@@ -69,16 +68,16 @@ def read_file(file, req_uri, redir_param={}):
             else:
                 strToken = token
 
-            if token != None:
-                template = loader.load_template(file)
-                file_data = generateHTML(template, loader, req_uri, token=strToken)
+            # if token != None:
+            #     template = loader.load_template(file)
+            #     file_data = generateHTML(template, loader, req_uri, token=strToken)
 
-            else:
-                file = 'server/src/redirect.html'
-                template = loader.load_template(file)
+            # else:
+            file = 'server/src/redirect.html'
+            template = loader.load_template(file)
 
-                file_data = template.render(
-                    {'path': path, 'token': strToken}, loader=loader).encode('utf-8')
+            file_data = template.render(
+                {'path': path, 'token': strToken}, loader=loader).encode('utf-8')
 
         """
         For Static files
@@ -91,81 +90,11 @@ def read_file(file, req_uri, redir_param={}):
 
 
 def generateHTML(template, loader, req_uri, token=None):
-    data = handleDBFetchAPI(req_uri)
+    data = controller.handleDBFetchAPI(req_uri)
     file_data = template.render(
         {'data': data, 'token': token}, loader=loader).encode('utf-8')
 
     return file_data
 
-
-def handleDBFetchAPI(req_uri):
-    if req_uri in ['/index.html', '', '/', "index.html"]:
-        return get_posts()
-
-    if req_uri in ['/users.html', "users.html"]:
-        return get_users()
-    if req_uri in ['/friends.html', "friends.html"]:
-        return get_friends(3)
-    if req_uri in ['/add_friends.html', "add_friends.html"]:
-        return add_friends()
-
-        
-def get_posts():
-    con = sqlite3.connect('server/db/posts.db')
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    cur.execute("select * from posts")
-
-    c = cur.fetchall()
-
-    posts = []
-    for t in c:
-        x = dict(t)
-        posts.append(x)
-    return posts
-
-
-def get_users():
-    con = sqlite3.connect('server/db/accounts.db')
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    cur.execute("select Name, user_name from accounts")
-
-    c = cur.fetchall()
-
-    accounts = []
-    for t in c:
-        x = dict(t)
-        accounts.append(x)
-    return accounts
-
-
-def get_user(user_name):
-    con = sqlite3.connect('server/db/accounts.db')
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    cur.execute(
-        "select Name, user_name from accounts where user_name=?", (user_name,))
-
-    c = cur.fetchone()
-
-    if c:
-        return c
-
-
-def get_friends(user_id):
-    con = sqlite3.connect('server/db/friendship.db')
-    con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    x = user_id
-    cur.execute(
-        'select user_id2 from friendship where user_id1=? and status="friends"', (x,))
-    print(cur)
-    c = cur.fetchall()
-
-    friends = []
-    for friend in c:
-        dic = dict(friend)
-        friends.append(dic)
-    print(friends)
-    return friends
+    # if req_uri in ['/add_friends.html', "add_friends.html"]:
+    #     return add_friends()

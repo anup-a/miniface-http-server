@@ -101,7 +101,7 @@ def online_peers_db_create():
         con = sqlite3.connect('server/db/online_peers.db')
         cur = con.cursor()
         cur.execute(
-            "create table if not exists online_peers('user_id' integer not null, 'ip' varchar(100), 'port' varchar(7),")
+            "create table if not exists online_peers('user_id' integer not null, 'ip' varchar(100), 'port' varchar(7)")
         con.commit()
         con = sqlite3.connect('server/db/online_peers.db')
         cur = con.cursor()
@@ -125,7 +125,7 @@ def initialize_db():
 # database = json.load(db_f)
 
 # initialize SQLITE DATABASE
-intialize_db()
+initialize_db()
 
 # # Queue initialization for online users
 # onlineQueue = queue_init()

@@ -2,21 +2,29 @@ import sqlite3
 from body_parser import body_parser
 from os.path import join
 from helpers import *
-from response import *
 from argon2 import PasswordHasher
-from db import onlineQueue
+from response import handle_redirect
 import jwt
 
 ph = PasswordHasher()
 
 # ////////////////
-# Database Handles
+# Database Handlers
 # ////////////////
 
 def addtoDB(res_sock, req_uri, body):
     parsedText = body_parser(body)
     handleDBPushAPI(res_sock, req_uri, parsedText)
 
+
+def handleDBFetchAPI(req_uri):
+    if req_uri in ['/index.html', '', '/', "index.html"]:
+        return get_posts()
+
+    if req_uri in ['/users.html', "users.html"]:
+        return get_users()
+    if req_uri in ['/friends.html', "friends.html"]:
+        return get_friends(3)
 
 def handleDBPushAPI(res_sock, req_uri, body):
     if req_uri == '/addpost.html' or req_uri == 'addpost.html':
@@ -40,10 +48,10 @@ def handleDBPushAPI(res_sock, req_uri, body):
         res = signup(body['name'], body['username'], body['password'])
         if res[0]:
             print("User inserted")
-            handle_redirect(res_sock, user_id=res[1])
+            handle_redirect(res_sock, user_id=res[1], req_uri="login_page.html")
         else:
             print(res[1])
-            handle_redirect(res_sock)
+            handle_redirect(res_sock, req_uri="signup_page.html")
 
     if req_uri=='/add_friends.html' or req_uri == 'add_friends.html':
         print(body)
@@ -88,6 +96,19 @@ def getPostsForUser(user_id):
         posts.append(x)
     return posts
 
+def get_posts():
+    con = sqlite3.connect('server/db/posts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("select * from posts")
+
+    c = cur.fetchall()
+
+    posts = []
+    for t in c:
+        x = dict(t)
+        posts.append(x)
+    return posts
 
 # ////////////////
 # User CONTROLLERS
@@ -137,13 +158,56 @@ def signup(name, user_name, password):
         con.commit()
         return(0, e)
 
+def get_users():
+    con = sqlite3.connect('server/db/accounts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("select Name, user_name from accounts")
+
+    c = cur.fetchall()
+
+    accounts = []
+    for t in c:
+        x = dict(t)
+        accounts.append(x)
+    return accounts
+
+def get_user(user_name):
+    con = sqlite3.connect('server/db/accounts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute(
+        "select Name, user_name from accounts where user_name=?", (user_name,))
+
+    c = cur.fetchone()
+
+    if c:
+        return c
+
 
 
 # //////////////////
 # Friends CONTROLLERS
 # //////////////////
 
-def add_friend(user_id,friend_user_id):
+
+def get_friends(user_id):
+    con = sqlite3.connect('server/db/friendship.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    x = user_id
+    cur.execute(
+        'select user_id2 from friendship where user_id1=? and status="friends"', (x,))
+    c = cur.fetchall()
+
+    friends = []
+    for friend in c:
+        dic = dict(friend)
+        friends.append(dic)
+
+    return friends
+
+def add_friend(user_id, friend_user_id):
     friend_user_id=int(friend_user_id)
     con = sqlite3.connect('server/db/friendship.db')
     con.row_factory = sqlite3.Row

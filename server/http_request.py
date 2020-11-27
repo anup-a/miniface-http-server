@@ -6,7 +6,6 @@ import jwt
 
 def handle_GET(res_sock, req_line, token=None):
     print("Fetching Response ...")
-
     http_req, req_uri, protocol_version = req_line
     req_uri = req_uri[1:]
 
@@ -17,7 +16,7 @@ def handle_GET(res_sock, req_line, token=None):
             username = user['username']
             session = get_user(username)
             if session != None:
-                handle_redirect(res_sock, req_uri="index.html", token=token)
+                handle_response(res_sock, req_uri="index.html", redir_param={'token': token})
             else:
                 handle_redirect(res_sock, req_uri='login_page.html')
         else:
