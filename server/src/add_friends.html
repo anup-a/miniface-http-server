@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Friends</title>
+    <link rel="stylesheet" href="./styles/index.css" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    #include( "server/src/nav.html" )
+      #for @acc in @data:
+      <div class="container-fluid">
+        <!-- Control the column width, and how they should appear on different devices -->
+        <div class="row">
+          <div class="col-sm-6" style="background-color:rgb(248, 248, 240);">@acc.user_name,@acc.user_id</div>
+          <div class="col-sm-6" style="background-color:rgb(211, 208, 204);">
+            <form method="POST" action="/add_friends.html">
+              <input type="hidden" value="@acc.user_id" name="user_id">
+              <button type="submit">Add Friend</button>
+
+            </form>
+            <!-- <input type="submit" value="Add Friend"> -->
+          </div>
+        </div>
+        <br>
+      </div>
+      #end
+  </body>
+  <script>
+    // Workaround for last unrecieved response
+    setTimeout(() => {
+      var request = new XMLHttpRequest();
+      request.open("GET", "/assets/dummy.svg", true);
+
+      request.onload = function () {
+        if (this.status >= 200 && this.status < 400) {
+          var data = JSON.parse(this.response);
+        } else {
+          console.log("Some files not loaded");
+        }
+      };
+
+      request.onerror = function () {
+        console.log("Request refused.");
+      };
+
+      request.send();
+    }, 2000);
+  </script>
+</html>

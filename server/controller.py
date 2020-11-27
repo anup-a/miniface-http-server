@@ -72,6 +72,71 @@ def signup(name, user_name, password):
     except Exception as e:
         con.commit()
         return(0, e)
+def add_friend(user_id,friend_user_id):
+    friend_user_id=int(friend_user_id)
+    con = sqlite3.connect('server/db/friendship.db')
+    con.row_factory = sqlite3.Row
+
+
+    cur = con.cursor()
+    print("Reached in add_friends")
+    cur.execute('select user_id2 from friendship where user_id1=? and status="friends"',(user_id,))
+    c = cur.fetchall()
+    friends = []
+    for friend in c:
+        dic = dict(friend)
+        friends.append(dic)
+    if friend_user_id in friends:
+        print("Already friends")
+        return 2
+
+
+    cur = con.cursor()
+    cur.execute('select user_id2 from friendship where user_id1=? and status="pending"',(user_id,))
+    c = cur.fetchall()
+    pending = []
+    for friend in c:
+        dic = dict(friend)
+        pending.append(dic)
+    if friend_user_id in pending:
+        print("ALready sent request")
+        return 1
+
+
+    cur = con.cursor()
+    cur.execute('select user_id1 from friendship where user_id2=? and status="pending"',(user_id,))
+    c = cur.fetchall()
+    reverse_pending = []
+    for friend in c:
+        dic = dict(friend)
+        reverse_pending.append(dic)
+    if friend_user_id in reverse_pending:
+        print("Accept pending request")
+        cur = con.cursor()
+        cur.execute("delete from friendship where user_id1=? and user_id2=? and status=?",
+                        (friend_user_id,user_id,"pending"))
+        cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
+                        (user_id,friend_user_id,"friends"))
+        cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
+                        (friend_user_id,user_id,"friends"))
+        con.commit()
+        return 3
+
+    cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
+                        (user_id,friend_user_id,"pending"))
+    print("Request Sent")
+    con.commit()
+    return 0
+def unfriend(user_id,friend_user_id):
+    friend_user_id=int(friend_user_id)
+    con = sqlite3.connect('server/db/friendship.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    print("Reached in add_friends")
+    cur.execute("delete from friendship where user_id1=? and user_id2=? and status=?",
+                (friend_user_id,user_id,"friends"))
+    cur.execute("delete from friendship where user_id1=? and user_id2=? and status=?",
+                (user_id,friend_user_id,"friends"))
 
 
 def handleDBPushAPI(res_sock, req_uri, body):
@@ -100,6 +165,17 @@ def handleDBPushAPI(res_sock, req_uri, body):
         else:
             print(res[1])
             handle_redirect(res_sock)
+
+    if req_uri=='/add_friends.html' or req_uri == 'add_friends.html':
+        print(body)
+        user_id=3
+        res = add_friend(user_id,body['user_id'])
+        # if res[0]:
+        #     print("authenticated.")
+        #     handle_redirect(res_sock, user_id=res[1])
+        # else:
+        #     print(res[1])
+        handle_redirect(res_sock,req_uri="add_friends.html")
 
 
 def getPostsForUser(user_id):
