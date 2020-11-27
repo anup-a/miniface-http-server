@@ -12,7 +12,6 @@
   <body>
     <div class="container" id="container">
       <div class="form-container sign-in-container">
-        <!-- <form action="{{ url_for('login') }}" method = "POST"> -->
         <form method="POST" action="/signup_page.html" id="signup">
           <div style="width: 16%; height: 16%; padding-bottom: 10px">
             <img src="./static/fb1.png" style="width: 100%; height: 100%" />
@@ -41,7 +40,7 @@
             id="password"
             required
           />
-          <input type="submit" value="Login" />
+          <input type="submit" value="Sign up" />
           <!-- <input name="username" type="username">
         			<input name="password" type="password">
         			<button type="submit">Log in</button> -->
@@ -59,5 +58,8 @@
       </div>
     </div>
   </body>
+  <script>
+    window.localStorage.removeItem("token");
+  </script>
   #include( "server/src/bugFix.html" )
 </html>

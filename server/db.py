@@ -12,8 +12,7 @@ ph = PasswordHasher()
 #     onlineQueue = sqlqueue.UniqueQ('server/db', auto_commit="true")
 #     return onlineQueue
 
-
-def db_init():
+def posts_db_create():
     if(os.path.exists("server/db/posts.db")):
         db = ''
     else:
@@ -38,7 +37,7 @@ def db_init():
     return "success"
 
 
-def db_init2():
+def accounts_db_create():
     if(os.path.exists("server/db/accounts.db")):
         db = ''
     else:
@@ -65,7 +64,7 @@ def db_init2():
     return "success"
 
 
-def db_init3():
+def friends_db_create():
     if(os.path.exists("server/db/friendship.db")):
         db = ''
     else:
@@ -94,14 +93,46 @@ def db_init3():
     return "success for friends"
 
 
+def online_peers_db_create():
+
+    if(os.path.exists("server/db/online_peers.db")):
+        db = ''
+    else:
+        con = sqlite3.connect('server/db/online_peers.db')
+        print(con)
+        cur = con.cursor()
+        cur.execute(
+            "create table if not exists online_peers('user_name' varchar(100) not null, 'ip' varchar(100), 'port' varchar(7))")
+        
+        con.commit()
+
+        con = sqlite3.connect('server/db/online_peers.db')
+        cur = con.cursor()
+        user_name="default"
+        cur.execute("insert into online_peers(user_name) values(?)",
+                (user_name,))
+        con.commit()
+
+    return "success"
+
+
+def initialize_db():
+
+    accounts_db_create()
+
+    posts_db_create()
+    
+    friends_db_create()
+
+    online_peers_db_create()
+
+
 # LEGACY::initialize JSON DATABASE
-db_f = open('server/db/data.json')
-database = json.load(db_f)
+# db_f = open('server/db/data.json')
+# database = json.load(db_f)
 
 # initialize SQLITE DATABASE
-db_init()
-db_init2()
-db_init3()
+initialize_db()
 
 # # Queue initialization for online users
 # onlineQueue = queue_init()
