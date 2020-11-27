@@ -35,7 +35,6 @@ def db_init():
         cur.execute("insert into posts( post_body, user_id) values(?,?)",
             ('At the Facebook company, we are constantly iterating, solving problems and working together to connect people all over the world', '5'))
         con.commit()
-
     return "success"
 
 
