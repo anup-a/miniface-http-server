@@ -9,8 +9,9 @@ import jwt
 
 ph = PasswordHasher()
 
-
+# ////////////////
 # Database Handles
+# ////////////////
 
 def addtoDB(res_sock, req_uri, body):
     parsedText = body_parser(body)
@@ -68,6 +69,8 @@ def add_post(post_id, post_body, user_id):
                 (post_id, post_body, user_id))
     con.commit()
     return "success"
+
+
 
 def getPostsForUser(user_id):
     friends = get_friends(user_id)
@@ -191,7 +194,7 @@ def add_friend(user_id,friend_user_id):
         con.commit()
         return 3
 
-    cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
+    cur.execute("insert into friendship(user_id1, user_id2, status) values(?,?,?)",
                         (user_id,friend_user_id,"pending"))
     print("Request Sent")
     con.commit()
@@ -208,8 +211,29 @@ def unfriend(user_id,friend_user_id):
                 (friend_user_id,user_id,"friends"))
     cur.execute("delete from friendship where user_id1=? and user_id2=? and status=?",
                 (user_id,friend_user_id,"friends"))
+    con.commit()
 
 
 
+# ////////////////
+# Chat/Online CONTROLLERS
+# ////////////////
 
 
+def setOnline(user_id):
+    con = sqlite3.connect('server/db/online_peers.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("insert into online_peers(user_id) values(?)",
+                (user_id,))
+
+    con.commit()
+
+def setOffline(user_id):
+    con = sqlite3.connect('server/db/online_peers.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("delete from online_peers where user_id=?",
+                (user_id,))
+
+    con.commit()
