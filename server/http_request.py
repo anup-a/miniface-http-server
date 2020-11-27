@@ -41,7 +41,7 @@ def handle_POST(res_sock, req_line, req_headers, token=None):
     # update_to_db(body)
     # print(req_uri)
     if (req_uri in ["login_page.html", "/login_page.html", "signup_page.html", "/signup_page.html"]) or (token and len(token) != 0):
-        addtoDB(res_sock, req_uri, body)
+        addtoDB(res_sock, req_uri, body, token)
     else:
         handle_redirect(res_sock, "login_page.html")
 

@@ -27,11 +27,35 @@
     <div class="nav-setting-btn">
       <img src="./assets/Setting.svg" alt="" />
     </div>
-    <div class="nav-profile-icon">
+    <div class="nav-profile-icon" onclick="handleLogout()">
       <img src="./assets/Logout.svg" alt="" />
     </div>
     <div class="nav-avatar">
       <img src="./assets/avat.png" alt="" />
     </div>
   </div>
+
+  <script>
+    function handleLogout() {
+      var request = new XMLHttpRequest();
+      request.open("POST", "/logout", true);
+
+      request.onload = function () {
+        if (this.status >= 200 && this.status < 400) {
+          var data = JSON.parse(this.response);
+        } else {
+          console.log("User is offline.");
+        }
+      };
+
+      request.onerror = function () {
+        console.log("Request refused.");
+      };
+
+      request.send();
+
+      window.localStorage.removeItem("token");
+      window.location.href = "login_page.html";
+    }
+  </script>
 </nav>

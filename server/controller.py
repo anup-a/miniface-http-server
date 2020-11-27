@@ -12,9 +12,12 @@ ph = PasswordHasher()
 # Database Handlers
 # ////////////////
 
-def addtoDB(res_sock, req_uri, body):
-    parsedText = body_parser(body)
-    handleDBPushAPI(res_sock, req_uri, parsedText)
+def addtoDB(res_sock, req_uri, body, token=None):
+    try:
+        parsedText = body_parser(body)
+        handleDBPushAPI(res_sock, req_uri, parsedText, token)
+    except:
+        handleDBPushAPI(res_sock, req_uri, '', token)
 
 
 def handleDBFetchAPI(req_uri):
@@ -26,7 +29,10 @@ def handleDBFetchAPI(req_uri):
     if req_uri in ['/friends.html', "friends.html"]:
         return get_friends(3)
 
-def handleDBPushAPI(res_sock, req_uri, body):
+def handleDBPushAPI(res_sock, req_uri, body, token):
+
+    print(req_uri)
+
     if req_uri == '/addpost.html' or req_uri == 'addpost.html':
         print("Adding to SQLite Database.....")
         add_post('2', body["name"], '1')
@@ -65,6 +71,15 @@ def handleDBPushAPI(res_sock, req_uri, body):
         handle_redirect(res_sock,req_uri="add_friends.html")
 
 
+    if req_uri=='/logout' or req_uri=="logout":
+
+        print(req_uri)
+        if token and len(token) != 0:
+            user = jwt.decode(token, 'MINI_SECRET', algorithms=['HS256'])
+            username = user['username']
+            setOffline(username)
+
+        handle_redirect(res_sock,req_uri="login_page.html")
 
 # ////////////////
 # Post CONTROLLERS
@@ -128,16 +143,19 @@ def login(user_name, password):
     cur.execute("select * from accounts where user_name=?", (user_name,))
 
     c = cur.fetchone()
+    print(user_name, password)
+
     if c:
-        try:
-            if ph.verify(c[3], password):
-                print("password verified")
-                accessToken = genAccessToken(c)
-                return((1, c[0], accessToken))
-            else:
-                return((0, 'The password was wrong.'))
-        except:
+        # try:
+        if ph.verify(c[3], password):
+            print("password verified")
+            accessToken = genAccessToken(c)
+            setOnline(user_name)
+            return((1, c[0], accessToken))
+        else:
             return((0, 'The password was wrong.'))
+        # except:
+        #     return((0, 'The password was wrong.'))
     else:
         return((0, 'The username does not exist.'))
 
@@ -284,20 +302,20 @@ def unfriend(user_id,friend_user_id):
 # ////////////////
 
 
-def setOnline(user_id):
+def setOnline(user_name):
     con = sqlite3.connect('server/db/online_peers.db')
     con.row_factory = sqlite3.Row
+    con.set_trace_callback(print)
     cur = con.cursor()
-    cur.execute("insert into online_peers(user_id) values(?)",
-                (user_id,))
-
+    cur.execute("insert into online_peers(user_name) values(?)",
+                (user_name,))
     con.commit()
 
-def setOffline(user_id):
+def setOffline(user_name):
     con = sqlite3.connect('server/db/online_peers.db')
     con.row_factory = sqlite3.Row
     cur = con.cursor()
-    cur.execute("delete from online_peers where user_id=?",
-                (user_id,))
+    cur.execute("delete from online_peers where user_name=?",
+                (user_name,))
 
     con.commit()
