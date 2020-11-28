@@ -318,13 +318,16 @@ def unfriend(user_id,friend_user_id):
 
 
 def setOnline(user_id):
-    con = sqlite3.connect('server/db/online_peers.db')
-    con.row_factory = sqlite3.Row
-    # con.set_trace_callback(print)
-    cur = con.cursor()
-    cur.execute("insert into online_peers(user_id) values(?)",
-                (user_id,))
-    con.commit()
+    try:
+        con = sqlite3.connect('server/db/online_peers.db')
+        con.row_factory = sqlite3.Row
+        # con.set_trace_callback(print)
+        cur = con.cursor()
+        cur.execute("insert into online_peers(user_id) values(?)",
+                    (user_id,))
+        con.commit()
+    except:
+        print("User already online.")
 
 def setOffline(user_id):
     con = sqlite3.connect('server/db/online_peers.db')
@@ -339,12 +342,8 @@ def setOffline(user_id):
 def getOnlineFriends(user_id):
     all_friends = get_friends(user_id)
     friends_ids = [i['user_id2'] for i in all_friends]
-    print("/////////////////////////")
-    print(friends_ids)
-    print("/////////////////////////")
     con = sqlite3.connect('server/db/online_peers.db')
     con.row_factory = sqlite3.Row
-    con.set_trace_callback(print)
     cur = con.cursor()
 
     sql="select * from online_peers where user_id in ({seq})".format(seq=','.join(['?']*len(friends_ids)))
