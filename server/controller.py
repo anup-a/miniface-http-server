@@ -28,6 +28,9 @@ def handleDBFetchAPI(req_uri):
         return get_users()
     if req_uri in ['/friends.html', "friends.html"]:
         return get_friends(3)
+    if req_uri in ['/online.html', 'online.html']:
+        return getOnlineFriends(3)
+
     if req_uri in ['/add_friends.html', "add_friends.html"]:
         return show_potential_friends(3)
     if req_uri in ['/friend_request.html', "friend_request.html"]:
@@ -159,19 +162,17 @@ def login(user_name, password):
     cur.execute("select * from accounts where user_name=?", (user_name,))
 
     c = cur.fetchone()
-    print(user_name, password)
-
     if c:
-        # try:
-        if ph.verify(c[3], password):
-            print("password verified")
-            accessToken = genAccessToken(c)
-            setOnline(user_name)
-            return((1, c[0], accessToken))
-        else:
+        try:
+            if ph.verify(c[3], password):
+                print("password verified")
+                accessToken = genAccessToken(c)
+                setOnline(c[0])
+                return((1, c[0], accessToken))
+            else:
+                return((0, 'The password was wrong.'))
+        except:
             return((0, 'The password was wrong.'))
-        # except:
-        #     return((0, 'The password was wrong.'))
     else:
         return((0, 'The username does not exist.'))
 
@@ -191,6 +192,7 @@ def signup(name, user_name, password):
     except Exception as e:
         con.commit()
         return(0, e)
+
 
 def get_users():
     con = sqlite3.connect('server/db/accounts.db')
@@ -219,7 +221,18 @@ def get_user(user_name):
     if c:
         return c
 
+def get_users_by_ids(user_ids):
+    con = sqlite3.connect('server/db/accounts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
 
+    cur.execute(
+        "select Name, user_name from accounts where user_name=?", (user_name,))
+
+    c = cur.fetchone()
+
+    if c:
+        return c
 
 # //////////////////
 # Friends CONTROLLERS
@@ -323,6 +336,7 @@ def add_friend(user_id, friend_user_id):
 
 
 def unfriend(user_id,friend_user_id):
+
     friend_user_id=int(friend_user_id)
     con = sqlite3.connect('server/db/friendship.db')
     con.row_factory = sqlite3.Row
@@ -390,20 +404,49 @@ def show_request(user_id):
 # ////////////////
 
 
-def setOnline(user_name):
+def setOnline(user_id):
+    try:
+        con = sqlite3.connect('server/db/online_peers.db')
+        con.row_factory = sqlite3.Row
+        # con.set_trace_callback(print)
+        cur = con.cursor()
+        cur.execute("insert into online_peers(user_id) values(?)",
+                    (user_id,))
+        con.commit()
+    except:
+        print("User already online.")
+
+def setOffline(user_id):
     con = sqlite3.connect('server/db/online_peers.db')
     con.row_factory = sqlite3.Row
-    con.set_trace_callback(print)
     cur = con.cursor()
-    cur.execute("insert into online_peers(user_name) values(?)",
-                (user_name,))
+    cur.execute("delete from online_peers where user_id=?",
+                (user_id,))
+
     con.commit()
 
-def setOffline(user_name):
+
+def getOnlineFriends(user_id):
+    all_friends = get_friends(user_id)
+    friends_ids = [i['user_id2'] for i in all_friends]
     con = sqlite3.connect('server/db/online_peers.db')
     con.row_factory = sqlite3.Row
     cur = con.cursor()
-    cur.execute("delete from online_peers where user_name=?",
-                (user_name,))
 
+    sql="select * from online_peers where user_id in ({seq})".format(seq=','.join(['?']*len(friends_ids)))
+    cur.execute(sql, friends_ids)
+    c = cur.fetchall()
+    print(c)
     con.commit()
+
+    online_friends = []
+    for friend in c:
+        dic = dict(friend)
+        online_friends.append(dic)
+
+    return online_friends
+
+
+
+
+    

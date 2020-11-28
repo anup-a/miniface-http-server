@@ -99,19 +99,18 @@ def online_peers_db_create():
         db = ''
     else:
         con = sqlite3.connect('server/db/online_peers.db')
-        print(con)
         cur = con.cursor()
         cur.execute(
-            "create table if not exists online_peers('user_name' varchar(100) not null, 'ip' varchar(100), 'port' varchar(7))")
+            "create table if not exists online_peers('user_id' integer primary key, 'ip' varchar(100), 'port' varchar(7))")
         
         con.commit()
 
-        con = sqlite3.connect('server/db/online_peers.db')
-        cur = con.cursor()
-        user_name="default"
-        cur.execute("insert into online_peers(user_name) values(?)",
-                (user_name,))
-        con.commit()
+        # con = sqlite3.connect('server/db/online_peers.db')
+        # cur = con.cursor()
+        # user_name="default"
+        # cur.execute("insert into online_peers(user_name) values(?)",
+        #         (user_name,))
+        # con.commit()
 
     return "success"
 
