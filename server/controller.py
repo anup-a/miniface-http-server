@@ -31,6 +31,10 @@ def handleDBFetchAPI(req_uri):
     if req_uri in ['/online.html', 'online.html']:
         return getOnlineFriends(3)
 
+    if req_uri in ['/add_friends.html', "add_friends.html"]:
+        return show_potential_friends(3)
+    if req_uri in ['/friend_request.html', "friend_request.html"]:
+        return show_request(3)
 
 def handleDBPushAPI(res_sock, req_uri, body, token):
 
@@ -66,11 +70,6 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
         print(body)
         user_id=3
         res = add_friend(user_id,body['user_id'])
-        # if res[0]:
-        #     print("authenticated.")
-        #     handle_redirect(res_sock, user_id=res[1])
-        # else:
-        #     print(res[1])
         handle_redirect(res_sock,req_uri="add_friends.html")
 
 
@@ -83,6 +82,23 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
             setOffline(username)
 
         handle_redirect(res_sock,req_uri="login_page.html")
+
+    if req_uri=='/friends.html' or req_uri == 'friends.html':
+        print(body)
+        user_id=3
+        res = unfriend(user_id,body['user_id'])
+        handle_redirect(res_sock,req_uri="friends.html")
+
+    if req_uri=='/friend_request' or req_uri == 'friend_request':
+        print(body)
+        user_id=3
+        res = accept_friend_request(user_id,body['user_id'])
+        handle_redirect(res_sock,req_uri="friend_request.html")
+    if req_uri=='/reject_friend_request' or req_uri == 'reject_friend_request':
+        print(body)
+        user_id=3
+        res = reject_friend_request(user_id,body['user_id'])
+        handle_redirect(res_sock,req_uri="friend_request.html")
 
 # ////////////////
 # Post CONTROLLERS
@@ -190,6 +206,7 @@ def get_users():
     for t in c:
         x = dict(t)
         accounts.append(x)
+    # print(accounts)
     return accounts
 
 def get_user(user_name):
@@ -231,12 +248,33 @@ def get_friends(user_id):
         'select user_id2 from friendship where user_id1=? and status="friends"', (x,))
     c = cur.fetchall()
 
+
+    con = sqlite3.connect('server/db/accounts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
     friends = []
     for friend in c:
         dic = dict(friend)
+        user_id2= dic["user_id2"]  #{'user_id2': 5}
+        cur.execute("select Name from accounts where user_id=?",(user_id2,))
+        cnew = dict(cur.fetchone())
+        dic["Name"]=cnew["Name"]
         friends.append(dic)
-
     return friends
+
+def show_potential_friends(user_id):
+    con = sqlite3.connect('server/db/accounts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("select user_id,Name, user_name from accounts")
+
+    c = cur.fetchall()
+
+    a = []
+    for t in c:
+        x = dict(t)
+        a.append(x)
+    return a
 
 
 def add_friend(user_id, friend_user_id):
@@ -246,49 +284,49 @@ def add_friend(user_id, friend_user_id):
 
 
     cur = con.cursor()
-    print("Reached in add_friends")
-    cur.execute('select user_id2 from friendship where user_id1=? and status="friends"',(user_id,))
-    c = cur.fetchall()
-    friends = []
-    for friend in c:
-        dic = dict(friend)
-        friends.append(dic)
-    if friend_user_id in friends:
-        print("Already friends")
-        return 2
+    print("...............Reached in add_friends...............")
+    # cur.execute('select user_id2 from friendship where user_id1=? and status="friends"',(user_id,))
+    # c = cur.fetchall()
+    # friends = []
+    # for friend in c:
+    #     dic = dict(friend)
+    #     friends.append(dic)
+    # if friend_user_id in friends:
+    #     print("Already friends")
+    #     return 2
 
 
-    cur = con.cursor()
-    cur.execute('select user_id2 from friendship where user_id1=? and status="pending"',(user_id,))
-    c = cur.fetchall()
-    pending = []
-    for friend in c:
-        dic = dict(friend)
-        pending.append(dic)
-    if friend_user_id in pending:
-        print("ALready sent request")
-        return 1
+    # cur = con.cursor()
+    # cur.execute('select user_id2 from friendship where user_id1=? and status="pending"',(user_id,))
+    # c = cur.fetchall()
+    # pending = []
+    # for friend in c:
+    #     dic = dict(friend)
+    #     pending.append(dic)
+    # if friend_user_id in pending:
+    #     print("ALready sent request")
+    #     return 1
 
 
-    cur = con.cursor()
-    cur.execute('select user_id1 from friendship where user_id2=? and status="pending"',(user_id,))
-    c = cur.fetchall()
-    reverse_pending = []
-    for friend in c:
-        dic = dict(friend)
-        reverse_pending.append(dic)
+    # cur = con.cursor()
+    # cur.execute('select user_id1 from friendship where user_id2=? and status="pending"',(user_id,))
+    # c = cur.fetchall()
+    # reverse_pending = []
+    # for friend in c:
+    #     dic = dict(friend)
+    #     reverse_pending.append(dic)
 
-    if friend_user_id in reverse_pending:
-        print("Accept pending request")
-        cur = con.cursor()
-        cur.execute("delete from friendship where user_id1=? and user_id2=? and status=?",
-                        (friend_user_id,user_id,"pending"))
-        cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
-                        (user_id,friend_user_id,"friends"))
-        cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
-                        (friend_user_id,user_id,"friends"))
-        con.commit()
-        return 3
+    # if friend_user_id in reverse_pending:
+    #     print("Accept pending request")
+    #     cur = con.cursor()
+    #     cur.execute("delete from friendship where user_id1=? and user_id2=? and status=?",
+    #                     (friend_user_id,user_id,"pending"))
+    #     cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
+    #                     (user_id,friend_user_id,"friends"))
+    #     cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
+    #                     (friend_user_id,user_id,"friends"))
+    #     con.commit()
+    #     return 3
 
     cur.execute("insert into friendship(user_id1, user_id2, status) values(?,?,?)",
                         (user_id,friend_user_id,"pending"))
@@ -311,6 +349,55 @@ def unfriend(user_id,friend_user_id):
     con.commit()
 
 
+def accept_friend_request(user_id,friend_user_id):
+    friend_user_id=int(friend_user_id)
+    con = sqlite3.connect('server/db/friendship.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    print("Accept pending request")
+    cur.execute("delete from friendship where user_id1=? and user_id2=? and status=?",
+                    (friend_user_id,user_id,"pending"))
+    cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
+                    (user_id,friend_user_id,"friends"))
+    cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
+                    (friend_user_id,user_id,"friends"))
+    con.commit()
+
+def reject_friend_request(user_id,friend_user_id):
+    friend_user_id=int(friend_user_id)
+    con = sqlite3.connect('server/db/friendship.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    print("Accept pending request")
+    cur.execute("delete from friendship where user_id1=? and user_id2=? and status=?",
+                    (friend_user_id,user_id,"pending"))
+    con.commit()
+
+
+def show_request(user_id):
+    con = sqlite3.connect('server/db/friendship.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    x = user_id
+    cur.execute(
+        'select user_id1 from friendship where user_id2=? and status="pending"', (x,))
+    c = cur.fetchall()
+
+
+    con = sqlite3.connect('server/db/accounts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    friends = []
+    for friend in c:
+        dic = dict(friend)
+
+        user_id1= dic["user_id1"]  #{'user_id2': 5}
+        cur.execute("select Name from accounts where user_id=?",(user_id1,))
+        cnew = dict(cur.fetchone())
+        dic["Name"]=cnew["Name"]
+        friends.append(dic)
+    print(friends)
+    return friends
 
 # ////////////////
 # Chat/Online CONTROLLERS
