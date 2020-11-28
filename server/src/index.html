@@ -24,13 +24,14 @@
   #if(@token)
   <script>
     window.localStorage.setItem("token", "@token");
-    document.cookie = "@token";
+    document.cookie = "auth=@token";
   </script>
-  #end
+  #else
   <script>
     token = window.localStorage.getItem("token");
     if (token) {
-      document.cookie = token;
+      document.cookie = `auth=${token}`;
     }
   </script>
+  #end
 </html>

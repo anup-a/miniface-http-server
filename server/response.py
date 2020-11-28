@@ -2,6 +2,8 @@ import sqlite3
 from os.path import join
 from helpers import *
 import controller
+import jwt
+
 
 def handle_redirect(res_sock, req_uri='index.html', user_id=None, token=None):
     redir_param = {
@@ -90,7 +92,15 @@ def read_file(file, req_uri, redir_param={}):
 
 
 def generateHTML(template, loader, req_uri, token=None):
-    data = controller.handleDBFetchAPI(req_uri)
+    #defa ult User
+    user_id = 3
+    if token and len(token) != 0:
+        user = jwt.decode(token, 'MINI_SECRET', algorithms=['HS256'])
+        username = user['username']
+        session = controller.get_user(username)
+        user_id = dict(session)['user_id']
+
+    data = controller.handleDBFetchAPI(req_uri, user_id)
     file_data = template.render(
         {'data': data, 'token': token}, loader=loader).encode('utf-8')
 

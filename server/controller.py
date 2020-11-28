@@ -20,25 +20,32 @@ def addtoDB(res_sock, req_uri, body, token=None):
         handleDBPushAPI(res_sock, req_uri, '', token)
 
 
-def handleDBFetchAPI(req_uri):
+def handleDBFetchAPI(req_uri, user_id):
+
     if req_uri in ['/index.html', '', '/', "index.html"]:
         return get_posts()
-
     if req_uri in ['/users.html', "users.html"]:
         return get_users()
     if req_uri in ['/friends.html', "friends.html"]:
-        return get_friends(3)
+        return get_friends(user_id)
     if req_uri in ['/online.html', 'online.html']:
-        return getOnlineFriends(3)
-
+        return getOnlineFriends(user_id)
     if req_uri in ['/add_friends.html', "add_friends.html"]:
-        return show_potential_friends(3)
+        return show_potential_friends(user_id)
     if req_uri in ['/friend_request.html', "friend_request.html"]:
-        return show_request(3)
+        return show_request(user_id)
 
 def handleDBPushAPI(res_sock, req_uri, body, token):
 
-    print(req_uri)
+    user_id = 3 #Default
+    print(token)
+
+    if token and len(token) != 0:
+        user = jwt.decode(token, 'MINI_SECRET', algorithms=['HS256'])
+        username = user['username']
+        session = get_user(username)
+        print(session)
+        user_id = dict(session)['user_id']
 
     if req_uri == '/addpost.html' or req_uri == 'addpost.html':
         print("Adding to SQLite Database.....")
@@ -67,8 +74,7 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
             handle_redirect(res_sock, req_uri="signup_page.html")
 
     if req_uri=='/add_friends.html' or req_uri == 'add_friends.html':
-        print(body)
-        user_id=3
+
         res = add_friend(user_id,body['user_id'])
         handle_redirect(res_sock,req_uri="add_friends.html")
 
@@ -84,19 +90,14 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
         handle_redirect(res_sock,req_uri="login_page.html")
 
     if req_uri=='/friends.html' or req_uri == 'friends.html':
-        print(body)
-        user_id=3
         res = unfriend(user_id,body['user_id'])
         handle_redirect(res_sock,req_uri="friends.html")
 
     if req_uri=='/friend_request' or req_uri == 'friend_request':
-        print(body)
-        user_id=3
         res = accept_friend_request(user_id,body['user_id'])
         handle_redirect(res_sock,req_uri="friend_request.html")
+
     if req_uri=='/reject_friend_request' or req_uri == 'reject_friend_request':
-        print(body)
-        user_id=3
         res = reject_friend_request(user_id,body['user_id'])
         handle_redirect(res_sock,req_uri="friend_request.html")
 
@@ -214,7 +215,7 @@ def get_user(user_name):
     con.row_factory = sqlite3.Row
     cur = con.cursor()
     cur.execute(
-        "select Name, user_name from accounts where user_name=?", (user_name,))
+        "select user_id, Name, user_name from accounts where user_name=?", (user_name,))
 
     c = cur.fetchone()
 

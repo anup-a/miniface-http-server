@@ -69,8 +69,11 @@ def get_response_headers(file):
 
 def getTokenFromHeaders(req_headers):
     token = None
+    cookies = None
+
     if 'Cookie' in req_headers.keys():
-        token = req_headers['Cookie']
+        cookies = req_headers['Cookie']
+        token = cookies.split('=')[1]
     return token
 
 
