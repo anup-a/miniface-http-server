@@ -5,6 +5,8 @@ from helpers import *
 from argon2 import PasswordHasher
 from response import handle_redirect
 import jwt
+# from chat import run_chat_server
+from random import randint
 
 ph = PasswordHasher()
 
@@ -34,6 +36,20 @@ def handleDBFetchAPI(req_uri, user_id):
         return show_potential_friends(user_id)
     if req_uri in ['/friend_request.html', "friend_request.html"]:
         return show_request(user_id)
+    
+    # if req_uri in ['/chat/start']:
+    #     port = get_port_from_user(user_id)
+    #     print(port)
+    #     run_chat_server("server", port)
+    
+    # if req_uri in ['chat/send']:
+        
+    # if req_uri in ['chat/client']:
+    #     port = get_port_from_user(user_id)
+    #     print(port)
+    #     run_chat_server("requester", port)
+
+
 
 def handleDBPushAPI(res_sock, req_uri, body, token):
 
@@ -49,7 +65,7 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
 
     if req_uri == '/addpost.html' or req_uri == 'addpost.html':
         print("Adding to SQLite Database.....")
-        add_post('2', body["name"], '1')
+        add_post(body["name"], token)
         print("Done. Added")
         handle_redirect(res_sock)
 
@@ -105,11 +121,13 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
 # Post CONTROLLERS
 # ////////////////
 
-def add_post(post_id, post_body, user_id):
+def add_post(post_body, token):
     con = sqlite3.connect('server/db/posts.db')
     cur = con.cursor()
-    cur.execute("insert into posts(post_id, post_body, user_id) values(?,?,?)",
-                (post_id, post_body, user_id))
+    user  = get_user(jwt.decode(token, 'MINI_SECRET', algorithm='HS256')['username'])
+    user_id = dict(user)['user_id']
+    cur.execute("insert into posts(post_body, user_id) values(?,?)",
+                (post_body, user_id))
     con.commit()
     return "success"
 
@@ -128,7 +146,11 @@ def getPostsForUser(user_id):
     posts = []
     for t in c:
         x = dict(t)
+        user_id = x['user_id']
+        author_name = get_user_by_id(user_id)
+        x['author'] = author_name
         posts.append(x)
+        
     return posts
 
 def get_posts():
@@ -142,6 +164,9 @@ def get_posts():
     posts = []
     for t in c:
         x = dict(t)
+        user_id = x['user_id']
+        author_name = get_user_by_id(user_id)
+        x['author'] = author_name
         posts.append(x)
     return posts
 
@@ -222,18 +247,17 @@ def get_user(user_name):
     if c:
         return c
 
-def get_users_by_ids(user_ids):
+def get_user_by_id(user_id):
     con = sqlite3.connect('server/db/accounts.db')
     con.row_factory = sqlite3.Row
     cur = con.cursor()
 
     cur.execute(
-        "select Name, user_name from accounts where user_name=?", (user_name,))
-
+        "select Name, user_name from accounts where user_id=?", (user_id,))
     c = cur.fetchone()
 
     if c:
-        return c
+        return c['Name']
 
 # //////////////////
 # Friends CONTROLLERS
@@ -411,9 +435,11 @@ def setOnline(user_id):
         con.row_factory = sqlite3.Row
         # con.set_trace_callback(print)
         cur = con.cursor()
-        cur.execute("insert into online_peers(user_id) values(?)",
-                    (user_id,))
+        ip, port = "127.0.0.1", randint(1024, 9999)
+        cur.execute("insert into online_peers(user_id, ip, port) values(?, ?, ?)",
+                    (user_id, ip, port))
         con.commit()
+
     except:
         print("User already online.")
 
@@ -425,6 +451,17 @@ def setOffline(user_id):
                 (user_id,))
 
     con.commit()
+
+def get_port_from_user(user_id):
+
+    con = sqlite3.connect('server/db/online_peers.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("select port from online_peers where user_id=?",
+                (user_id,))
+
+    c = cur.fetchOne()
+    return c
 
 
 def getOnlineFriends(user_id):

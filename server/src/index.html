@@ -10,14 +10,21 @@
     #include( "server/src/nav.html" )
     <div class="feed" id="feed">
       #include( "server/src/addpost.html" )
-      <ul>
+      <div class="post-feed">
         #for @post in @data:
-        <li>@post.post_body</li>
+        <div class="post-item">
+          <div class="post-author">
+            <div class="post-avatar">
+              <img src="./assets/avat.png" alt="" />
+            </div>
+            <div class="post-name">@post.author</div>
+          </div>
+          <div class="post-desc">@post.post_body</div>
+        </div>
         #end
-      </ul>
+      </div>
     </div>
     <hr />
-    <p>@token</p>
   </body>
   #include( "server/src/bugFix.html" )
   <div></div>

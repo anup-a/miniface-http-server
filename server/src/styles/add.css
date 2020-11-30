@@ -1,3 +1,101 @@
 #add-post {
-    width: 50%;
+    background: white;
+    border-radius: 16px;
+    margin: 2rem auto;
+    box-shadow:0 0 15px 0 rgba(0,0,0,0.03), 0 20px 40px 10px rgba(224,224,224,0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+#add-post .form-heading {
+    display: flex;
+    align-items: center;
+}
+
+#add-post .form-heading .edit-ico {
+    border-radius: 50%;
+    background-color: #EBF2FF;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    padding: 0.4rem;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem;
+}
+
+#add-post .form-heading p {
+    margin: 1 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: rgb(112, 112, 112);
+    letter-spacing: 0.25mm;
+}
+
+#add-post-form {
+    display: flex;
+    flex-direction: column;
+    margin: 1.5rem;
+}
+
+#add-post-form textarea {
+    border-radius: 16px;
+    padding: 0.5rem;
+    border: 2px solid rgb(223, 223, 223);
+}
+
+.btn-grp {
+    display: flex;
+    margin-top: 1.5rem;
+}
+
+.btn-grp .post{
+    background-color: #EBF2FF;
+    display: flex;
+    align-items: center;
+    /* justify-content: space-evenly; */
+}
+
+.btn-grp .image {
+    background-color: #FFF0F2;
+    display: flex;
+    align-items: center;
+    /* justify-content: space-evenly; */
+}
+
+.post .post-btn {
+    background-color: #0053FF;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.2rem;
+    margin-right: 1rem;
+}
+
+.image .image-btn {
+    background-color: #FF4154;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.2rem;
+    margin-right: 1rem;
+
+}
+#add-post-form button {
+    width: 140px;
+    /* height: 40px; */
+    border: none;
+    outline: none;
+    padding: 0.3rem 0.5rem;
+    border-radius: 20px;
+    color: black;
+    font-weight: 500;
+    margin: 0.5rem;
+    font-size: 0.8rem;
 }
