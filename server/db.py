@@ -99,7 +99,7 @@ def messages_db_create():
         con = sqlite3.connect('server/db/messages.db')
         cur = con.cursor()
         cur.execute(
-            "create table if not exists messages('message_id' integer primary key autoincrement,'user_id1' integer not null,'user_id2' integer not null,'message' varchar(100) not null,'timestamp' DATETIME DEFAULT CURRENT_TIMESTAMP)")
+            "create table if not exists messages('message_id' integer primary key autoincrement,'user_id1' integer not null,'user_id2' integer not null,'message' varchar(100) not null,'timestamp' DATETIME DEFAULT CURRENT_TIMESTAMP,'message_status' varchar(100) not null default 'unread')")
         con.commit()
         con = sqlite3.connect('server/db/messages.db')
         cur = con.cursor()

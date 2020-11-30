@@ -511,19 +511,16 @@ def get_messages(user_id,friend_user_id):
     con.row_factory = sqlite3.Row
     cur = con.cursor()
     cur.execute(
-        'select user_id1,user_id2,message,timestamp from messages  where (user_id1=? and user_id2=?) or (user_id2=? and user_id1=?)', (user_id,friend_user_id,user_id,friend_user_id))
+        'select user_id1,user_id2,message,timestamp,message_status from messages  where (user_id1=? and user_id2=?) or (user_id2=? and user_id1=?)', (user_id,friend_user_id,user_id,friend_user_id))
     c = cur.fetchall()
 
     message1_2 = []
     for x in c:
         dic = dict(x)
         message1_2.append(dic)
-    # cur = con.cursor()
-    # cur.execute(
-    #     'select user_id1,user_id2,message from messages  where user_id2=? and user_id1=?', (user_id,friend_user_id))
-    # c = cur.fetchall()
-    # for x in c:
-    #     dic = dict(x)
-    #     message1_2.append(dic)
+    cur = con.cursor()
+    cur.execute(
+        'update messages set message_status=? where (user_id2=? and user_id1=?)', ("read",user_id,friend_user_id))
+    con.commit()
     
     return message1_2
