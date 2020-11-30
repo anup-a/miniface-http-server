@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles/index.css" />
+    <style>
+      option {
+        background-color: white;
+        box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.03),
+          0 20px 40px 10px rgba(224, 224, 224, 0.2);
+        border: none;
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    #include( "server/src/nav.html" )
+    <div class="feed" id="feed">
+      <h2>My Posts</h2>
+      <hr>
+      <div class="post-feed">
+        #for @post in @data:
+        <div class="post-item">
+          <div class="post-author" style="position: relative">
+            <div class="post-avatar">
+              <img src="./assets/avat.png" alt="" />
+            </div>
+            <div class="post-name">@post.author</div>
+            <div
+              class="div"
+              style="
+                position: absolute;
+                right: 0;
+                display: flex;
+                align-items: center;
+              "
+            >
+              <form action="/changestatus" method="POST" class="formClass">
+                <input type="hidden" name="post_id" value="@post.post_id" />
+                <input type="hidden" name="post_status" value="@post.status" class="currstatus"/>
+
+                  <div style="display: flex;">
+                    <select
+                    name="status"
+                    class="statusSelect"
+                    style="
+                      margin-right: 1rem;
+                      border: none;
+                      outline: none;
+                      border-radius: 6px;
+                      box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.03),
+                        0 20px 40px 10px rgba(224, 224, 224, 0.2);
+                    "
+                    onchange="addButton()"
+                  >
+                    <option value="public" selected=>Public</option>
+                    <option value="private">Private</option>
+                    <option value="friends">Friends</option>
+                  </select>
+                  <img
+                  src="./assets/Tick.svg"
+                  alt=""
+                  class="tick-btn"
+                  style="display: none; margin-right: 1rem"
+                />
+                  </div>
+              </form>
+              <img src="./assets/Edit.svg" alt="" />
+            </div>
+          </div>
+          <div class="post-desc">@post.post_body</div>
+        </div>
+        #end
+      </div>
+    </div>
+    <hr />
+  </body>
+  #include( "server/src/bugFix.html" )
+  <script>
+
+    allSelects = document.querySelectorAll('.statusSelect')
+    allOldStatus = document.querySelectorAll('.currstatus')
+    allForms = document.querySelectorAll('.formClass')
+    allTickBtns = document.querySelectorAll('.tick-btn')
+
+    for(let k=0; k<allSelects.length; k++){
+      var temp = allOldStatus[k].value;
+      var mySelect = allSelects[k];
+      
+      for(var i, j = 0; i = mySelect.options[j]; j++) {
+          if(i.value == temp) {
+              mySelect.selectedIndex = j;
+              break;
+          }
+      }
+      
+      allSelects[k].addEventListener("change", function(event){
+        allTickBtns[k].style.display = "block"  
+      })
+      
+      allTickBtns[k].addEventListener("click", function(event){
+        allForms[k].submit()
+      });
+
+    }
+
+    function addButton() {
+      btn = document.getElementById("tick-btn");
+      btn.style.display = "block";
+    }
+
+    function changeStatus() {
+      document.getElementById("statusform").submit();
+    }
+
+      
+  </script>
+</html>

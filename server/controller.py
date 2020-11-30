@@ -23,9 +23,8 @@ def addtoDB(res_sock, req_uri, body, token=None):
 
 
 def handleDBFetchAPI(req_uri, user_id):
-
     if req_uri in ['/index.html', '', '/', "index.html"]:
-        return get_posts()
+        return getPostsForUser(user_id)
     if req_uri in ['/users.html', "users.html"]:
         return get_users()
     if req_uri in ['/friends.html', "friends.html"]:
@@ -36,6 +35,8 @@ def handleDBFetchAPI(req_uri, user_id):
         return show_potential_friends(user_id)
     if req_uri in ['/friend_request.html', "friend_request.html"]:
         return show_request(user_id)
+    if req_uri in ['me.html', '/me.html']:
+        return get_posts_by_user(user_id)
     
     # if req_uri in ['/chat/start']:
     #     port = get_port_from_user(user_id)
@@ -117,6 +118,14 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
         res = reject_friend_request(user_id,body['user_id'])
         handle_redirect(res_sock,req_uri="friend_request.html")
 
+    if req_uri == '/changestatus' or req_uri == 'changestatus':
+        print(body)
+        status = body['status']
+        post_id = body['post_id']
+
+        updatePostStatus(post_id, status, token)
+        handle_redirect(res_sock, req_uri="me.html")
+
 # ////////////////
 # Post CONTROLLERS
 # ////////////////
@@ -126,21 +135,22 @@ def add_post(post_body, token):
     cur = con.cursor()
     user  = get_user(jwt.decode(token, 'MINI_SECRET', algorithm='HS256')['username'])
     user_id = dict(user)['user_id']
-    cur.execute("insert into posts(post_body, user_id) values(?,?)",
-                (post_body, user_id))
+    cur.execute("insert into posts(post_body, user_id, status) values(?,?,?)",
+                (post_body, user_id, "public"))
     con.commit()
     return "success"
 
 
 
 def getPostsForUser(user_id):
-    friends = get_friends(user_id)
-
+    all_friends = get_friends(user_id)
+    friends = [i['user_id2'] for i in all_friends]
     con = sqlite3.connect('server/db/posts.db')
+    print(user_id, friends)
     con.row_factory = sqlite3.Row
     cur = con.cursor()
-    cur.execute("select * from posts where user_name in ?", ( friends,))
-
+    sql="select * from posts where not status='private' and user_id in ({seq}) ".format(seq=','.join(['?']*len(friends)))
+    cur.execute(sql, friends)
     c = cur.fetchall()
 
     posts = []
@@ -153,22 +163,51 @@ def getPostsForUser(user_id):
         
     return posts
 
-def get_posts():
+def get_posts_by_user(user_id):
     con = sqlite3.connect('server/db/posts.db')
     con.row_factory = sqlite3.Row
     cur = con.cursor()
-    cur.execute("select * from posts")
+    cur.execute("select * from posts where user_id=?", (user_id,))
 
     c = cur.fetchall()
 
+    print(user_id)
     posts = []
+    author_name = get_user_by_id(user_id)
     for t in c:
         x = dict(t)
-        user_id = x['user_id']
-        author_name = get_user_by_id(user_id)
         x['author'] = author_name
         posts.append(x)
     return posts
+
+def updatePostStatus(post_id, status, token):
+    user  = get_user(jwt.decode(token, 'MINI_SECRET', algorithm='HS256')['username'])
+    user_id = dict(user)['user_id']
+    post = get_post_by_id(post_id)
+
+    if (int(user_id) != int(dict(post)['user_id'])):
+        return 0
+    
+    con = sqlite3.connect('server/db/posts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute("update posts set status=? where post_id=?", (status, post_id,))
+    con.commit()
+
+def get_post_by_id(post_id):
+    con = sqlite3.connect('server/db/posts.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+
+    post_id = int(post_id)
+    cur.execute("select * from posts where post_id=?", (post_id,))
+
+    c = cur.fetchone()
+    if c:
+        return c
+
+
+    
 
 # ////////////////
 # User CONTROLLERS
@@ -287,6 +326,7 @@ def get_friends(user_id):
         friends.append(dic)
     return friends
 
+
 def show_potential_friends(user_id):
     con = sqlite3.connect('server/db/accounts.db')
     con.row_factory = sqlite3.Row
@@ -306,53 +346,7 @@ def add_friend(user_id, friend_user_id):
     friend_user_id=int(friend_user_id)
     con = sqlite3.connect('server/db/friendship.db')
     con.row_factory = sqlite3.Row
-
-
     cur = con.cursor()
-    print("...............Reached in add_friends...............")
-    # cur.execute('select user_id2 from friendship where user_id1=? and status="friends"',(user_id,))
-    # c = cur.fetchall()
-    # friends = []
-    # for friend in c:
-    #     dic = dict(friend)
-    #     friends.append(dic)
-    # if friend_user_id in friends:
-    #     print("Already friends")
-    #     return 2
-
-
-    # cur = con.cursor()
-    # cur.execute('select user_id2 from friendship where user_id1=? and status="pending"',(user_id,))
-    # c = cur.fetchall()
-    # pending = []
-    # for friend in c:
-    #     dic = dict(friend)
-    #     pending.append(dic)
-    # if friend_user_id in pending:
-    #     print("ALready sent request")
-    #     return 1
-
-
-    # cur = con.cursor()
-    # cur.execute('select user_id1 from friendship where user_id2=? and status="pending"',(user_id,))
-    # c = cur.fetchall()
-    # reverse_pending = []
-    # for friend in c:
-    #     dic = dict(friend)
-    #     reverse_pending.append(dic)
-
-    # if friend_user_id in reverse_pending:
-    #     print("Accept pending request")
-    #     cur = con.cursor()
-    #     cur.execute("delete from friendship where user_id1=? and user_id2=? and status=?",
-    #                     (friend_user_id,user_id,"pending"))
-    #     cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
-    #                     (user_id,friend_user_id,"friends"))
-    #     cur.execute("insert into friendship(user_id1, user_id2,status) values(?,?,?)",
-    #                     (friend_user_id,user_id,"friends"))
-    #     con.commit()
-    #     return 3
-
     cur.execute("insert into friendship(user_id1, user_id2, status) values(?,?,?)",
                         (user_id,friend_user_id,"pending"))
     print("Request Sent")

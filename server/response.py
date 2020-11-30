@@ -34,12 +34,11 @@ def handle_response(res_sock, req_uri, redir_param={}):
         http_res += header
 
     http_res += http_body
-
     res_sock.sendall(http_res)
 
 
 def read_file(file, req_uri, redir_param={}):
-
+    print("reading file...")
     redirect = False
     path = "/"
     token = None
@@ -92,6 +91,7 @@ def read_file(file, req_uri, redir_param={}):
 
 
 def generateHTML(template, loader, req_uri, token=None):
+    print("generating HTML")
     #defa ult User
     user_id = 3
     if token and len(token) != 0:

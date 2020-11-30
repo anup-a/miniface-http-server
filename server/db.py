@@ -19,20 +19,20 @@ def posts_db_create():
         con = sqlite3.connect('server/db/posts.db')
         cur = con.cursor()
         cur.execute(
-            "create table if not exists posts('post_id' integer primary key autoincrement, 'post_body' varchar(5000) not null, 'user_id' varchar(20) not null)")
+            "create table if not exists posts('post_id' integer primary key autoincrement, 'post_body' varchar(5000) not null, 'user_id' varchar(20) not null, 'status' varchar(20) not null )")
         con.commit()
         con = sqlite3.connect('server/db/posts.db')
         cur = con.cursor()
-        cur.execute("insert into posts(post_body, user_id) values(?,?)",
-                    ('Chilling at Beach with 5 Others. At Louisiana', '1'))
-        cur.execute("insert into posts(post_body, user_id) values(?,?)",
-                    ('At the restaurant.', '2'))
-        cur.execute("insert into posts( post_body, user_id) values(?,?)",
-                    ('Hacking NASA with HTML, and 3 others. ', '3'))
-        cur.execute("insert into posts( post_body, user_id) values(?,?)",
-            ('Be kind to unkind people they need it the post. ', '4'))
-        cur.execute("insert into posts( post_body, user_id) values(?,?)",
-            ('At the Facebook company, we are constantly iterating, solving problems and working together to connect people all over the world', '5'))
+        cur.execute("insert into posts(post_body, user_id, status) values(?,?,?)",
+                    ('Chilling at Beach with 5 Others. At Louisiana', '1', "public"))
+        cur.execute("insert into posts(post_body, user_id, status) values(?,?,?)",
+                    ('At the restaurant.', '2', "public"))
+        cur.execute("insert into posts( post_body, user_id, status) values(?,?,?)",
+                    ('Hacking NASA with HTML, and 3 others. ', '3', "friends"))
+        cur.execute("insert into posts( post_body, user_id, status) values(?,?,?)",
+            ('Be kind to unkind people they need it the post. ', '4', "private"))
+        cur.execute("insert into posts( post_body, user_id, status) values(?,?,?)",
+            ('At the Facebook company, we are constantly iterating, solving problems and working together to connect people all over the world', '5', "friends"))
         con.commit()
     return "success"
 
