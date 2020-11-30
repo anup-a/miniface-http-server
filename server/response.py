@@ -16,11 +16,18 @@ def handle_redirect(res_sock, req_uri='index.html', user_id=None, token=None):
     handle_response(res_sock, req_uri, redir_param)
 
 
-def handle_response(res_sock, req_uri, redir_param={}):
-    if req_uri == '':
-        req_uri = 'index.html'
-
-    file = join('server/src', req_uri)
+def handle_response(res_sock, req_uri, redir_param={}): #http
+    url=req_uri[:]
+    # print(url)
+    if url == '':
+        url = 'index.html'
+    if (not url.endswith('html')) and 'html' in url: #htt
+        url=url.split("?")
+        url=url[0]
+        # print(url)
+        
+        
+    file = join('server/src', url)
     file_size = get_size(file)
     http_res = gen_status(file_size)
 
