@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat</title>
+  </head>
+  <body>
+    <div id="chat">
+      #for @message in @data:
+        <li>
+            @message
+        </li>
+        #end
+    </div>
+
+      <form method="POST" action="/insert_message" >
+        <button type="submit">Send message</button>
+        <input type="text"  name="msg" id="msg" />
+        <input type="hidden"  name="friend_user_id" id="friend_id" />
+      </form>
+
+    </div>
+  </body>
+  <script>
+    let initChat = true;
+
+    function sendMessage() {
+
+    }
+    var friend_user_id=window.location.href.slice(43,);
+    document.getElementById("friend_id").value=friend_user_id;
+  </script>
+</html>

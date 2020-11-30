@@ -92,6 +92,29 @@ def friends_db_create():
         con.commit()
     return "success for friends"
 
+def messages_db_create():
+    if(os.path.exists("server/db/messages.db")):
+        db = ''
+    else:
+        con = sqlite3.connect('server/db/messages.db')
+        cur = con.cursor()
+        cur.execute(
+            "create table if not exists messages('message_id' integer primary key autoincrement,'user_id1' integer not null,'user_id2' integer not null,'message' varchar(100) not null,'timestamp' DATETIME DEFAULT CURRENT_TIMESTAMP)")
+        con.commit()
+        con = sqlite3.connect('server/db/messages.db')
+        cur = con.cursor()
+        cur.execute("insert into messages(user_id1, user_id2,message) values(?,?,?)",
+                    (1,2, "user 1 sending to user 2"))
+        
+        cur.execute("insert into messages(user_id1, user_id2,message) values(?,?,?)",
+                    (1,3, "user 1 sending to user 3"))
+        cur.execute("insert into messages(user_id1, user_id2,message) values(?,?,?)",
+                    (2,3, "user 2 sending to user 3"))       
+        cur.execute("insert into messages(user_id1, user_id2,message) values(?,?,?)",
+                    (3,2, "user 3 sending to user 2")) 
+        con.commit()
+    return "success for friends"
+
 
 def online_peers_db_create():
 
@@ -124,6 +147,8 @@ def initialize_db():
     friends_db_create()
 
     online_peers_db_create()
+
+    messages_db_create()
 
 
 # LEGACY::initialize JSON DATABASE

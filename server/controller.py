@@ -5,6 +5,7 @@ from helpers import *
 from argon2 import PasswordHasher
 from response import handle_redirect
 import jwt
+import re
 # from chat import run_chat_server
 from random import randint
 
@@ -37,7 +38,13 @@ def handleDBFetchAPI(req_uri, user_id):
         return show_request(user_id)
     if req_uri in ['me.html', '/me.html']:
         return get_posts_by_user(user_id)
-    
+    if req_uri[0:13] in ['messages.html'] or req_uri[0:14] in ['/messages.html']:
+        if req_uri[0:13] in ['messages.html']:
+            friend_user_id=req_uri[21:]
+        if req_uri[0:14] in ['/messages.html']:
+            friend_user_id=req_uri[22:]
+        friend_user_id=int(friend_user_id)
+        return get_messages(user_id,friend_user_id)    
     # if req_uri in ['/chat/start']:
     #     port = get_port_from_user(user_id)
     #     print(port)
@@ -125,6 +132,12 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
 
         updatePostStatus(post_id, status, token)
         handle_redirect(res_sock, req_uri="me.html")
+
+    if req_uri=='/insert_message' or req_uri == 'insert_message':
+        print(body)
+        res = insert_messages(user_id,body['friend_user_id'],body['msg'])
+        new_url="messages.html?friend="+body['friend_user_id']
+        handle_redirect(res_sock,req_uri=new_url)
 
 # ////////////////
 # Post CONTROLLERS
@@ -480,5 +493,37 @@ def getOnlineFriends(user_id):
 
 
 
+def insert_messages(user_id,friend_user_id,message_content):
+    friend_user_id=int(friend_user_id)
+    con = sqlite3.connect('server/db/messages.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    print("inserting messages")
+    cur.execute("insert into messages(user_id1, user_id2,message) values(?,?,?)",
+                    (user_id,friend_user_id,message_content))
+    # cur.execute("insert into messages(user_id1, user_id2,message) values(?,?,?)",
+    #                 (user_id,friend_user_id,message_content))
+    con.commit()
 
+def get_messages(user_id,friend_user_id):
+    friend_user_id=int(friend_user_id)
+    con = sqlite3.connect('server/db/messages.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute(
+        'select user_id1,user_id2,message,timestamp from messages  where (user_id1=? and user_id2=?) or (user_id2=? and user_id1=?)', (user_id,friend_user_id,user_id,friend_user_id))
+    c = cur.fetchall()
+
+    message1_2 = []
+    for x in c:
+        dic = dict(x)
+        message1_2.append(dic)
+    # cur = con.cursor()
+    # cur.execute(
+    #     'select user_id1,user_id2,message from messages  where user_id2=? and user_id1=?', (user_id,friend_user_id))
+    # c = cur.fetchall()
+    # for x in c:
+    #     dic = dict(x)
+    #     message1_2.append(dic)
     
+    return message1_2
