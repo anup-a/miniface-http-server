@@ -13,20 +13,20 @@ def GET(req, headers):
 def POST(req, data, headers={}):
     return(requests.post("http://localhost:8080/{}".format(req), data, headers=headers))
 
-def run_server(port):
+def run_server(HOST, port):
     script_name = 'server/client_server.py'
-    cmd_line = [sys.executable, script_name, 'server', port]
+    cmd_line = [sys.executable, script_name, 'server', port, 'IP', HOST]
     subprocess.check_call(cmd_line)
 
-def request_to_join(port):
+def request_to_join(HOST, port):
     script_name = 'server/client_server.py'
-    cmd_line = [sys.executable, script_name, 'requester', '12345']
+    cmd_line = [sys.executable, script_name, 'requester', '12345', 'IP', HOST]
     subprocess.check_call(cmd_line)
 
 if __name__ == '__main__':
 
     
-    payload = {'username':'A', "password":'hianup'}
+    payload = {'username':'B', "password":'hianup'}
     r = login('login_page.html', payload)
     print(r.text)
     if 'document.cookie' not in r.text:
@@ -45,5 +45,5 @@ if __name__ == '__main__':
     print(r.text)
     r = GET('online.html', {'Cookie': cookie[19:-1]})
     print(r.text)
-    request_to_join('12345')
-    # run_server('12345')
+    request_to_join('', '12345')
+    run_server('', '12345')

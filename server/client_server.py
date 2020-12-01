@@ -5,7 +5,7 @@ from threading import Thread
 import time
 import sys
 import time
-HOST = 'localhost' 
+
 stopthreads = set()
 
 def send(req_sock):
@@ -58,10 +58,10 @@ def client(req_sock, req_addr):
     req_sock.close()
     sys.exit()
             
-def server(port):
+def server(HOST, port):
 
     # create socket
-    listen_addr = '', port
+    listen_addr = HOST, port
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(listen_addr)
     sock.listen(20)
@@ -73,7 +73,7 @@ def server(port):
         thread = Thread(target=client, args=(req_sock, req_addr))
         thread.start()
 
-def send_join_request(port):
+def send_join_request(HOST, port):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((HOST, port))
     s.sendall(b'join \r\n\r\n')
@@ -94,8 +94,12 @@ def send_join_request(port):
     sys.exit()
 
 if __name__ == '__main__':
+    HOST = 'localhost' 
+    if len(sys.argv)==5:
+        HOST = sys.argv[4]
     if len(sys.argv)==3:
         if sys.argv[1]=='server':
-            server(int(sys.argv[2]))
+            server(HOST, int(sys.argv[2]))
         elif sys.argv[1]=='requester':
-            send_join_request(int(sys.argv[2]))
+            send_join_request(HOST, int(sys.argv[2]))
+    
