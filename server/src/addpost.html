@@ -1,11 +1,32 @@
 <link rel="stylesheet" href="./styles/add.css" />
 <div id="add-post">
   <div class="form-heading">
-    <img src="./assets/Edit.svg" />
+    <div class="edit-ico">
+      <img src="./assets/Edit.svg" />
+    </div>
     <p>Create Post</p>
   </div>
   <form method="POST" action="/addpost.html" id="add-post-form">
-    <input name="name" placeholder="What's on your mind, Anup?" />
-    <button>Submit</button>
+    <textarea
+      id="name"
+      name="name"
+      rows="6"
+      cols="50"
+      placeholder="Hey, Whats on your mind?"
+    ></textarea>
+    <div class="btn-grp">
+      <button class="post">
+        <div class="post-btn">
+          <img src="./assets/Fill.svg" />
+        </div>
+        <p>Submit</p>
+      </button>
+      <button class="image">
+        <div class="image-btn">
+          <img src="./assets/Image.svg" />
+        </div>
+        <p>Add Image</p>
+      </button>
+    </div>
   </form>
 </div>

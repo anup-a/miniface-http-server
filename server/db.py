@@ -18,20 +18,20 @@ def posts_db_create():
         con = sqlite3.connect('server/db/posts.db')
         cur = con.cursor()
         cur.execute(
-            "create table if not exists posts('post_id' integer primary key autoincrement, 'post_body' varchar(5000) not null, 'user_id' varchar(20) not null)")
+            "create table if not exists posts('post_id' integer primary key autoincrement, 'post_body' varchar(5000) not null, 'user_id' varchar(20) not null, 'status' varchar(20) not null )")
         con.commit()
         con = sqlite3.connect('server/db/posts.db')
         cur = con.cursor()
-        cur.execute("insert into posts(post_body, user_id) values(?,?)",
-                    ('Chilling at Beach with 5 Others. At Louisiana', '1'))
-        cur.execute("insert into posts(post_body, user_id) values(?,?)",
-                    ('At the restaurant.', '2'))
-        cur.execute("insert into posts( post_body, user_id) values(?,?)",
-                    ('Hacking NASA with HTML, and 3 others. ', '3'))
-        cur.execute("insert into posts( post_body, user_id) values(?,?)",
-            ('Be kind to unkind people they need it the post. ', '4'))
-        cur.execute("insert into posts( post_body, user_id) values(?,?)",
-            ('At the Facebook company, we are constantly iterating, solving problems and working together to connect people all over the world', '5'))
+        cur.execute("insert into posts(post_body, user_id, status) values(?,?,?)",
+                    ('Chilling at Beach with 5 Others. At Louisiana', '1', "public"))
+        cur.execute("insert into posts(post_body, user_id, status) values(?,?,?)",
+                    ('At the restaurant.', '2', "public"))
+        cur.execute("insert into posts( post_body, user_id, status) values(?,?,?)",
+                    ('Hacking NASA with HTML, and 3 others. ', '3', "friends"))
+        cur.execute("insert into posts( post_body, user_id, status) values(?,?,?)",
+            ('Be kind to unkind people they need it the post. ', '4', "private"))
+        cur.execute("insert into posts( post_body, user_id, status) values(?,?,?)",
+            ('At the Facebook company, we are constantly iterating, solving problems and working together to connect people all over the world', '5', "friends"))
         con.commit()
     return "success"
 
@@ -91,6 +91,29 @@ def friends_db_create():
         con.commit()
     return "success for friends"
 
+def messages_db_create():
+    if(os.path.exists("server/db/messages.db")):
+        db = ''
+    else:
+        con = sqlite3.connect('server/db/messages.db')
+        cur = con.cursor()
+        cur.execute(
+            "create table if not exists messages('message_id' integer primary key autoincrement,'user_id1' integer not null,'user_id2' integer not null,'message' varchar(100) not null,'timestamp' DATETIME DEFAULT CURRENT_TIMESTAMP,'message_status' varchar(100) not null default 'unread')")
+        con.commit()
+        con = sqlite3.connect('server/db/messages.db')
+        cur = con.cursor()
+        cur.execute("insert into messages(user_id1, user_id2,message) values(?,?,?)",
+                    (1,2, "user 1 sending to user 2"))
+        
+        cur.execute("insert into messages(user_id1, user_id2,message) values(?,?,?)",
+                    (1,3, "user 1 sending to user 3"))
+        cur.execute("insert into messages(user_id1, user_id2,message) values(?,?,?)",
+                    (2,3, "user 2 sending to user 3"))       
+        cur.execute("insert into messages(user_id1, user_id2,message) values(?,?,?)",
+                    (3,2, "user 3 sending to user 2")) 
+        con.commit()
+    return "success for friends"
+
 
 def online_peers_db_create():
 
@@ -98,19 +121,18 @@ def online_peers_db_create():
         db = ''
     else:
         con = sqlite3.connect('server/db/online_peers.db')
-        print(con)
         cur = con.cursor()
         cur.execute(
-            "create table if not exists online_peers('user_name' varchar(100) not null, 'ip' varchar(100), 'port' varchar(7))")
+            "create table if not exists online_peers('user_id' integer primary key, 'ip' varchar(100), 'port' varchar(7))")
         
         con.commit()
 
-        con = sqlite3.connect('server/db/online_peers.db')
-        cur = con.cursor()
-        user_name="default"
-        cur.execute("insert into online_peers(user_name) values(?)",
-                (user_name,))
-        con.commit()
+        # con = sqlite3.connect('server/db/online_peers.db')
+        # cur = con.cursor()
+        # user_name="default"
+        # cur.execute("insert into online_peers(user_name) values(?)",
+        #         (user_name,))
+        # con.commit()
 
     return "success"
 
@@ -124,6 +146,8 @@ def initialize_db():
     friends_db_create()
 
     online_peers_db_create()
+
+    messages_db_create()
 
 
 # LEGACY::initialize JSON DATABASE

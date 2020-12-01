@@ -10,47 +10,35 @@
     #include( "server/src/nav.html" )
     <div class="feed" id="feed">
       #include( "server/src/addpost.html" )
-      <ul>
+      <div class="post-feed">
         #for @post in @data:
-        <li>@post.post_body</li>
+        <div class="post-item">
+          <div class="post-author">
+            <div class="post-avatar">
+              <img src="./assets/avat.png" alt="" />
+            </div>
+            <div class="post-name">@post.author</div>
+          </div>
+          <div class="post-desc">@post.post_body</div>
+        </div>
         #end
-      </ul>
+      </div>
     </div>
     <hr />
-    <p>@token</p>
   </body>
-  <!-- <script>
-    // Workaround for last unrecieved response
-    setTimeout(() => {
-      var request = new XMLHttpRequest();
-      request.open("GET", "/assets/dummy.svg", true);
-  
-      request.onload = function () {
-        if (this.status >= 200 && this.status < 400) {
-          var data = JSON.parse(this.response);
-        } else {
-          console.log("Some files not loaded");
-        }
-      };
-  
-      request.onerror = function () {
-        console.log("Request refused.");
-      };
-  
-      request.send();
-    }, 2000);
-  </script>   -->
+  #include( "server/src/bugFix.html" )
   <div></div>
   #if(@token)
   <script>
     window.localStorage.setItem("token", "@token");
-    document.cookie = "@token";
+    document.cookie = "auth=@token";
   </script>
-  #end
+  #else
   <script>
     token = window.localStorage.getItem("token");
     if (token) {
-      document.cookie = token;
+      document.cookie = `auth=${token}`;
     }
   </script>
+  #end
 </html>

@@ -14,3 +14,56 @@ html, body {
 input:focus, input:hover {
     outline: none;
 }
+
+textarea::placeholder{
+    font-family: 'Poppins', sans-serif;
+}
+
+textarea:focus, textarea:hover{
+    outline: none;
+}
+
+
+/* Post CSS */
+
+#feed {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.post-item {
+    background: white;
+    border-radius: 16px;
+    margin: 2rem auto;
+    box-shadow:0 0 15px 0 rgba(0,0,0,0.03), 0 20px 40px 10px rgba(224,224,224,0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+}
+
+
+.post-author {
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+
+.post-author .post-avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 1rem;
+}
+
+.post-avatar img {
+    border-radius : 50%;
+    width: 40px;
+    box-shadow: #EBF2FF;
+    margin-bottom: 0.5rem;
+}
+
+.post-desc {
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    color: rgb(161, 161, 161);
+}
