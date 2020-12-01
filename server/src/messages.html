@@ -4,27 +4,130 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        background-color: #F9FAFB;
+    }
+    
+      #conversation{
+        background: white;
+        width: 40%;
+        border-radius: 16px;
+        margin: 2rem auto;
+        box-shadow:0 0 15px 0 rgba(0,0,0,0.03), 0 20px 40px 10px rgba(224,224,224,0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .chat {        
+        display: flex;
+        flex-direction: column;
+        height: 60vh;
+        padding: 2rem;
+        overflow-y: scroll;
+      }
+
+      .sent {
+        align-self: flex-end;
+        padding: 1rem 2rem;
+        background-color: #0053FF;
+        color: white;
+        border-top-left-radius: 24px;
+        border-top-right-radius: 24px;
+        border-bottom-left-radius: 24px;
+        max-width: 60%;
+        margin: 0.8rem;
+
+      }
+
+      .received {
+        align-self: flex-start;
+        border-bottom-right-radius: 24px;
+        border-top-right-radius: 24px;
+        border-top-left-radius: 24px;
+        max-width: 60%;
+        padding: 1rem 2rem;
+        background-color: #EBF2FF;
+        margin: 0.8rem;
+      }
+
+      .msg-input {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        display: flex;
+        position: relative;
+        background-color: #ebebeb;
+        align-items: center;
+      }
+
+      .msg-input-text {
+        width: 100%;
+        border: none;
+        outline: none;
+        padding: 2rem;
+        background-color: #ebebeb;
+        font-size: 1rem;
+      }
+
+      .send-btn{
+        position: absolute;
+        right: 0;
+      }
+
+      button{
+        border: none;
+        outline: none;
+        background-color: #0053FF;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        padding: 0.8rem;
+        margin-right: 2rem;
+      }
+
+      button img {
+        width: 100%;
+      }
+      
+    </style>
   </head>
   <body>
-    <div id="chat">
-      #for @message in @data:
-        <li>
-            @message
-        </li>
+    #include( 'server/src/nav.html' )
+    <div id="conversation">
+      <div class="chat" id="chat">
+        #for @message in @data.chat:
+        #if (@message.user_id1 == @data.user_id)
+        <div class="sent">
+            @message.message
+        </div>
+        #else
+        <div class="received">
+          @message.message
+        </div>
         #end
-    </div>
-
-      <form method="POST" action="/insert_message" >
-        <button type="submit">Send message</button>
-        <input type="text"  name="msg" id="msg" />
+        #end
+      </div>
+      <form method="POST" action="/insert_message" class="msg-input">
+        <input type="text"  name="msg" id="msg" class="msg-input-text" placeholder="Type Message"/>
         <input type="hidden"  name="friend_user_id" id="friend_id" />
-      </form>
-
+        <button type="submit" class="send-btn">
+          <img src="./assets/Fill.svg" alt="">
+        </button>
+      </form>  
+    </div>
     </div>
   </body>
   <script>
     let initChat = true;
 
+    var objDiv = document.getElementById("chat");
+    objDiv.scrollTop = objDiv.scrollHeight;
+    
     function sendMessage() {
 
     }

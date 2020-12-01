@@ -18,7 +18,7 @@
   <body>
     #include( "server/src/nav.html" )
     <div class="feed" id="feed" style="margin: 0 auto;">
-      <h2>My Posts</h2>
+      <h2 id="user-posts"></h2>
       <hr>
       <div class="post-feed">
         #for @post in @data:
@@ -37,7 +37,7 @@
                 align-items: center;
               "
             >
-              <form action="/changestatus" method="POST" class="formClass">
+              <form class="formClass">
                 <input type="hidden" name="post_id" value="@post.post_id" />
                 <input type="hidden" name="post_status" value="@post.status" class="currstatus"/>
 
@@ -53,21 +53,14 @@
                       box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.03),
                         0 20px 40px 10px rgba(224, 224, 224, 0.2);
                     "
-                    onchange="addButton()"
+                    disabled
                   >
                     <option value="public" selected=>Public</option>
                     <option value="private">Private</option>
                     <option value="friends">Friends</option>
                   </select>
-                  <img
-                  src="./assets/Tick.svg"
-                  alt=""
-                  class="tick-btn"
-                  style="display: none; margin-right: 1rem"
-                />
                   </div>
               </form>
-              <img src="./assets/Edit.svg" alt="" />
             </div>
           </div>
           <div class="post-desc">@post.post_body</div>
@@ -85,6 +78,10 @@
     allForms = document.querySelectorAll('.formClass')
     allTickBtns = document.querySelectorAll('.tick-btn')
 
+    let ele = document.getElementsByClassName("post-name")
+    console.log(ele[0])
+    document.getElementById("user-posts").innerText = `${ele[0].innerText} 's Posts`
+
     for(let k=0; k<allSelects.length; k++){
       var temp = allOldStatus[k].value;
       var mySelect = allSelects[k];
@@ -96,25 +93,8 @@
           }
       }
       
-      allSelects[k].addEventListener("change", function(event){
-        allTickBtns[k].style.display = "block"  
-      })
-      
-      allTickBtns[k].addEventListener("click", function(event){
-        allForms[k].submit()
-      });
-
     }
-
-    function addButton() {
-      btn = document.getElementById("tick-btn");
-      btn.style.display = "block";
-    }
-
-    function changeStatus() {
-      document.getElementById("statusform").submit();
-    }
-
+    
       
   </script>
 </html>

@@ -5,37 +5,158 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Friends</title>
     <link rel="stylesheet" href="./styles/index.css" />
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      .main {
+        display: flex;
+        padding: 2rem;
+        margin: 0 auto;
+      }
+
+      .f-request {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 2rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.03),
+          0 20px 40px 10px rgba(224, 224, 224, 0.2);
+      }
+
+      .friend-req {
+        background: white;
+        border-radius: 16px;
+        margin: 2rem auto;
+        box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.03),
+          0 20px 40px 10px rgba(224, 224, 224, 0.2);
+
+        width: 50%;
+        margin: 2rem;
+        height: 100%;
+      }
+
+      .add-friends {
+        background: white;
+        border-radius: 16px;
+        margin: 2rem auto;
+        box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.03),
+          0 20px 40px 10px rgba(224, 224, 224, 0.2);
+
+        width: 50%;
+        height: 100%;
+        margin: 2rem;
+      }
+
+      .user-name {
+        display: flex;
+        align-items: center;
+      }
+
+      .user-name p {
+        font-weight: 700;
+        font-size: 1rem;
+        margin-right: 1rem;
+      }
+
+      .user-name span {
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: gray;
+      }
+
+      .btns {
+        display: flex;
+      }
+
+      .accept-btn {
+        border: none;
+        outline: none;
+        border-radius: 8px;
+        padding: 0.5rem;
+        background-color: #ebf2ff;
+        color: #0053ff;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-right: 1rem;
+      }
+
+      .reject-btn {
+        border: none;
+        outline: none;
+        border-radius: 8px;
+        padding: 0.5rem;
+        background-color: #fff0f2;
+        color: #ff4154;
+        font-weight: 700;
+        font-size: 1rem;
+      }
+
+      .add-btn {
+        border: none;
+        outline: none;
+        border-radius: 8px;
+        padding: 0.5rem;
+        background-color: #ebf2ff;
+        color: #0053ff;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-right: 1rem;
+      }
+
+      .heading {
+        color: rgb(112, 112, 112);
+        letter-spacing: 0.25mm;
+        margin: 0 1rem 1rem 1rem;
+        padding: 1rem 1rem;
+        /*border-bottom: 1px solid gray;*/
+      }
+    </style>
   </head>
   <body>
     #include( "server/src/nav.html" )
-      #for @acc in @data:
-      <div class="container-fluid">
-        <!-- Control the column width, and how they should appear on different devices -->
-        <div class="row">
-          <div class="col-sm-6" style="background-color:rgb(248, 248, 240);">@acc.Name,@acc.user_id1</div>
-          <div class="col-sm-6" style="background-color:rgb(211, 208, 204);">
+    <br />
+    <div class="main">
+      <div class="friend-req">
+        <h3 class="heading">Friend Requests</h3>
+        #for @acc in @data.requests:
+        <div class="f-request">
+          <div class="user-name">
+            <p>@acc.Name</p>
+            <span>sent you friend request</span>
+          </div>
+          <div class="btns">
             <form method="POST" action="/friend_request">
-              <input type="hidden" value="@acc.user_id1" name="user_id">
-              <button type="submit">Accept Request</button>
-
+              <input type="hidden" value="@acc.user_id1" name="user_id" />
+              <button type="submit" class="accept-btn">Accept</button>
             </form>
             <form method="POST" action="/reject_friend_request">
-                <input type="hidden" value="@acc.user_id1" name="user_id">
-                <button type="submit">Reject Request</button>
-  
-              </form>
-            <!-- <input type="submit" value="Add Friend"> -->
+              <input type="hidden" value="@acc.user_id1" name="user_id" />
+              <button type="submit" class="reject-btn">Reject</button>
+            </form>
           </div>
         </div>
-        <br>
+        #end
       </div>
-      #end
+
+      <div class="add-friends">
+        <h3 class="heading">Add New Friends</h3>
+        #for @acc in @data.new_friends:
+        <div class="f-request">
+          <div class="user-name">
+            <p>@acc.Name</p>
+            <span>is yout suggested friend</span>
+          </div>
+          <div class="btns">
+            <form method="POST" action="/add_friends.html">
+              <input type="hidden" value="@acc.user_id" name="user_id" />
+              <button type="submit" class="add-btn">Add Friend</button>
+            </form>
+          </div>
+        </div>
+        #end
+      </div>
+    </div>
   </body>
   <script>
     // Workaround for last unrecieved response

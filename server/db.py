@@ -52,13 +52,13 @@ def accounts_db_create():
         cur.execute("insert into accounts(Name, user_name, password) values(?,?,?)",
                     ('Anup Aglawe', 'anup_22', hashedPassword))
         cur.execute("insert into accounts(Name, user_name, password) values(?,?,?)",
-                    ('A', 'A', hashedPassword))
+                    ('Aditya Garg', 'A', hashedPassword))
         cur.execute("insert into accounts(Name, user_name, password) values(?,?,?)",
-                    ('B', 'B', hashedPassword))
+                    ('Abhihst Tiwari', 'B', hashedPassword))
         cur.execute("insert into accounts(Name, user_name, password) values(?,?,?)",
-                    ('C', 'C', hashedPassword))
+                    ('Lockheed Martin', 'C', hashedPassword))
         cur.execute("insert into accounts(Name, user_name, password) values(?,?,?)",
-                    ('D', 'D', hashedPassword))
+                    ('Boeing Agarwal', 'D', hashedPassword))
 
         con.commit()
     return "success"

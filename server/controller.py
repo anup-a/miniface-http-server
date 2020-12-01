@@ -24,8 +24,13 @@ def addtoDB(res_sock, req_uri, body, token=None):
 
 
 def handleDBFetchAPI(req_uri, user_id):
+
     if req_uri in ['/index.html', '', '/', "index.html"]:
-        return getPostsForUser(user_id)
+        return {
+            'posts' : getPostsForUser(user_id),
+            'online' : getOnlineFriends(user_id),
+            'friends' : get_friends(user_id),
+        }
     if req_uri in ['/users.html', "users.html"]:
         return get_users()
     if req_uri in ['/friends.html', "friends.html"]:
@@ -35,16 +40,27 @@ def handleDBFetchAPI(req_uri, user_id):
     if req_uri in ['/add_friends.html', "add_friends.html"]:
         return show_potential_friends(user_id)
     if req_uri in ['/friend_request.html', "friend_request.html"]:
-        return show_request(user_id)
+        return { 
+            'requests' : show_request(user_id),
+            'new_friends': show_potential_friends(user_id),
+        }
     if req_uri in ['me.html', '/me.html']:
-        return get_posts_by_user(user_id)
+        return get_posts_by_user(user_id, user_id)
+
+    if re.match(r"\/?feed\.html\?user=(\d+)", req_uri):
+        m = re.match(r"\/?feed\.html\?user=(\d+)", req_uri)
+        user = m.group(1)
+        return get_posts_by_user(user_id, user)
+
     if req_uri[0:13] in ['messages.html'] or req_uri[0:14] in ['/messages.html']:
         if req_uri[0:13] in ['messages.html']:
             friend_user_id=req_uri[21:]
         if req_uri[0:14] in ['/messages.html']:
             friend_user_id=req_uri[22:]
         friend_user_id=int(friend_user_id)
-        return get_messages(user_id,friend_user_id)    
+        return  {
+            'chat' : get_messages(user_id,friend_user_id),
+            'user_id' : user_id,}
     # if req_uri in ['/chat/start']:
     #     port = get_port_from_user(user_id)
     #     print(port)
@@ -62,7 +78,6 @@ def handleDBFetchAPI(req_uri, user_id):
 def handleDBPushAPI(res_sock, req_uri, body, token):
 
     user_id = 3 #Default
-    print(token)
 
     if token and len(token) != 0:
         user = jwt.decode(token, 'MINI_SECRET', algorithms=['HS256'])
@@ -104,8 +119,6 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
 
 
     if req_uri=='/logout' or req_uri=="logout":
-
-        print(req_uri)
         if token and len(token) != 0:
             user = jwt.decode(token, 'MINI_SECRET', algorithms=['HS256'])
             username = user['username']
@@ -126,7 +139,6 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
         handle_redirect(res_sock,req_uri="friend_request.html")
 
     if req_uri == '/changestatus' or req_uri == 'changestatus':
-        print(body)
         status = body['status']
         post_id = body['post_id']
 
@@ -134,7 +146,6 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
         handle_redirect(res_sock, req_uri="me.html")
 
     if req_uri=='/insert_message' or req_uri == 'insert_message':
-        print(body)
         res = insert_messages(user_id,body['friend_user_id'],body['msg'])
         new_url="messages.html?friend="+body['friend_user_id']
         handle_redirect(res_sock,req_uri=new_url)
@@ -176,15 +187,27 @@ def getPostsForUser(user_id):
         
     return posts
 
-def get_posts_by_user(user_id):
+def get_posts_by_user(curr_user_id, user_id):
     con = sqlite3.connect('server/db/posts.db')
     con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    cur.execute("select * from posts where user_id=?", (user_id,))
+    con.set_trace_callback(print)
 
+    cur = con.cursor()
+    all_friends = get_friends(curr_user_id)
+    friends = [str(i['user_id2']) for i in all_friends]
+
+    print(curr_user_id, user_id, friends)
+    
+    
+    if curr_user_id == user_id:
+        cur.execute("select * from posts where user_id=?", (user_id,))
+    elif str(user_id) in friends:
+        cur.execute("select * from posts where user_id=? and not status='private'", (user_id,))
+    else:
+        cur.execute("select * from posts where user_id=? and status='public'", (user_id,))
+   
     c = cur.fetchall()
 
-    print(user_id)
     posts = []
     author_name = get_user_by_id(user_id)
     for t in c:
@@ -341,10 +364,36 @@ def get_friends(user_id):
 
 
 def show_potential_friends(user_id):
+    all_friends = get_friends(user_id)
+    friends_ids = [i['user_id2'] for i in all_friends]
+
+
+    con = sqlite3.connect('server/db/friendship.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    x = user_id
+    cur.execute(
+        'select user_id2 from friendship where user_id1=? and status="pending"', (x,))
+    c = cur.fetchall()
+
+    for i in c:
+        friends_ids.append(dict(i)['user_id2'])
+
+    temp = show_request(user_id)
+    for i in temp:
+        friends_ids.append(i['user_id1'])
+
+    friends_ids.append(user_id)
+
     con = sqlite3.connect('server/db/accounts.db')
     con.row_factory = sqlite3.Row
     cur = con.cursor()
-    cur.execute("select user_id,Name, user_name from accounts")
+
+    print(friends_ids)
+    sql="select user_id,Name, user_name from accounts where not user_id in ({seq})".format(seq=','.join(['?']*len(friends_ids)))
+    cur.execute(sql, friends_ids)
+
+    # cur.execute("select user_id,Name, user_name from accounts")
 
     c = cur.fetchall()
 
@@ -481,15 +530,20 @@ def getOnlineFriends(user_id):
     sql="select * from online_peers where user_id in ({seq})".format(seq=','.join(['?']*len(friends_ids)))
     cur.execute(sql, friends_ids)
     c = cur.fetchall()
-    print(c)
     con.commit()
 
     online_friends = []
     for friend in c:
         dic = dict(friend)
         online_friends.append(dic)
+    print(online_friends)
+    friends_with_names = []
 
-    return online_friends
+    for user in online_friends:
+        friends_with_names.append( { 'user_id' : user_id, 'name' : get_user_by_id(user['user_id'])} )
+    print(friends_with_names)
+
+    return friends_with_names
 
 
 
@@ -517,8 +571,12 @@ def get_messages(user_id,friend_user_id):
     message1_2 = []
     for x in c:
         dic = dict(x)
+        # dic['message'] = dic['message'].decode('ascii')
         message1_2.append(dic)
     cur = con.cursor()
+
+    print(message1_2)
+
     cur.execute(
         'update messages set message_status=? where (user_id2=? and user_id1=?)', ("read",user_id,friend_user_id))
     con.commit()

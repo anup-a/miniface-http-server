@@ -8,22 +8,72 @@
   </head>
   <body>
     #include( "server/src/nav.html" )
-    <div class="feed" id="feed">
-      #include( "server/src/addpost.html" )
-      <div class="post-feed">
-        #for @post in @data:
-        <div class="post-item">
-          <div class="post-author">
-            <div class="post-avatar">
-              <img src="./assets/avat.png" alt="" />
-            </div>
-            <div class="post-name">@post.author</div>
-          </div>
-          <div class="post-desc">@post.post_body</div>
+    <div class="main">
+      <div class="first-column">
+        <div
+          class="profile-bg"
+          style="background-image: url('./../assets/walli.jpg')"
+        >
+          <p>My Timeline</p>
         </div>
-        #end
+        <div class="friends">
+          <h3>Friends</h3>
+          <div class="online-list">
+            #for @user in @data.friends:
+            <a
+              class="online-user"
+              style="margin: 1rem; padding: 0.5rem"
+              href="/feed.html?user=@user.user_id2"
+            >
+              <div
+                class="post-avatar"
+                style="margin-right: 1rem; align-items: 0; display: flex"
+              >
+                <img src="./assets/avat.png" alt="" />
+              </div>
+              @user.Name
+            </a>
+            #end
+          </div>
+        </div>
+      </div>
+
+      <div class="feed" id="feed">
+        #include( "server/src/addpost.html" )
+        <div class="post-feed">
+          #for @post in @data.posts:
+          <div class="post-item">
+            <a class="post-author" href="/feed.html?user=@post.user_id">
+              <div class="post-avatar">
+                <img src="./assets/avat.png" alt="" />
+              </div>
+              <div class="post-name">@post.author</div>
+            </a>
+            <div class="post-desc">@post.post_body</div>
+          </div>
+          #end
+        </div>
+      </div>
+      <div class="chat">
+        <h3>Contact</h3>
+        <div class="online-list">
+          #for @user in @data.online:
+          <a
+            class="online-user"
+            style="justify-content: space-between"
+            href="/messages.html?friend=@user.user_id"
+          >
+            <div>
+              <div class="green-dot"></div>
+              @user.name
+            </div>
+            <img src="./assets/Message.svg" alt="" />
+          </a>
+          #end
+        </div>
       </div>
     </div>
+
     <hr />
   </body>
   #include( "server/src/bugFix.html" )
