@@ -3,21 +3,134 @@
   <head>
     <meta charset="utf-8" />
     <title>Login</title>
-    <link rel="stylesheet" href="./static/login.css" />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
-    />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap");
+
+      body {
+        font-family: "Poppins", sans-serif;
+        display: flex;
+        align-items: center;
+        height: 100vh;
+      }
+      .container {
+        display: flex;
+        width: 70%;
+        height: 80vh;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        margin: 2rem auto;
+        box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.03),
+          0 20px 40px 10px rgba(224, 224, 224, 0.2);
+        border-radius: 24px;
+      }
+
+      .head {
+        font-family: Tahoma, sans-serif;
+        font-weight: 700;
+        width: 100%;
+        font-size: 2.5rem;
+        height: 100px;
+        background-color: white;
+        color: #0053ff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .overlay-container {
+        width: 35%;
+        border-top-left-radius: 24px;
+        border-bottom-left-radius: 24px;
+        background-image: url("./assets/a.jpg");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+
+        font-size: 2rem;
+        line-height: 1.2rem;
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+        color: #fff;
+        padding: 2rem;
+      }
+
+      .form-container {
+        width: 65%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      .login {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 70%;
+      }
+
+      input {
+        border: none;
+        outline: none;
+        background-color: #f9fafb;
+        width: 80%;
+        margin: 2rem 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+
+      label {
+        float: left;
+        font-weight: 700;
+        align-self: flex-start;
+        margin-left: 10%;
+        margin-top: 1.2rem;
+      }
+
+      button {
+        border: none;
+        outline: none;
+        background-color: #0053ff;
+        border-radius: 8px;
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        color: white;
+        font-weight: 700;
+      }
+
+      .nav-logo {
+        border-radius: 50%;
+        background-color: #ebf2ff;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 2rem;
+      }
+    </style>
   </head>
   <body>
     <div class="container" id="container">
+      <div class="overlay-container">
+        <p>Welcome</p>
+        <p>to</p>
+        <p>Mini</p>
+        <p>Facebook</p>
+      </div>
       <div class="form-container sign-in-container">
-        <!-- <form action="{{ url_for('login') }}" method = "POST"> -->
-        <form method="POST" action="/login_page.html" id="login">
-          <div style="width: 16%; height: 16%; padding-bottom: 10px">
-            <img src="./static/fb1.png" style="width: 100%; height: 100%" />
-          </div>
-          <label for="username"></label>
+        <div class="head">
+          <a class="nav-logo" href="/">
+            <img src="./assets/facebook.svg" />
+          </a>
+
+          Facebook
+        </div>
+        <form method="POST" action="/login_page.html" id="login" class="login">
+          <label for="username">Username</label>
           <input
             type="text"
             name="username"
@@ -25,7 +138,7 @@
             id="username"
             required
           />
-          <label for="password"></label>
+          <label for="password">Password</label>
           <input
             type="password"
             name="password"
@@ -33,21 +146,8 @@
             id="password"
             required
           />
-          <input type="submit" value="Login" />
-          <!-- <input name="username" type="username">
-        			<input name="password" type="password">
-        			<button type="submit">Log in</button> -->
+          <button type="submit">Login</button>
         </form>
-      </div>
-      <div class="overlay-container">
-        <div class="overlay">
-          <div class="overlay-panel overlay-right">
-            <h1>Welcome from Mini-Facebook</h1>
-            <div id="imgbg">
-              <img src="./static/fb.png" style="width: 80%; height: 80%" />
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </body>
