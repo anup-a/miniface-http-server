@@ -12,13 +12,19 @@ def send(req_sock):
     i = None
     while i!='Quit' and req_sock not in stopthreads:
         i = input()
-        req_sock.sendall(i.encode() + b'\r\n\r\n')
+        try:
+            req_sock.sendall(i.encode() + b'\r\n\r\n')
+        except:
+            break
     stopthreads.add(req_sock)
 
 def parse_message(req_sock):
     req = b''
     while b'\r\n\r\n' not in req and req_sock not in stopthreads:
-        req+=req_sock.recv(1024)
+        try:
+            req+=req_sock.recv(1024)
+        except:
+            break
     return req
 
 def receive(req_sock):

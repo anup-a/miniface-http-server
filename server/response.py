@@ -92,11 +92,16 @@ def read_file(file, req_uri, redir_param={}):
 
 
 def generateHTML(template, loader, req_uri, token=None):
-    data = controller.handleDBFetchAPI(req_uri)
-    file_data = template.render(
-        {'data': data, 'token': token}, loader=loader).encode('utf-8')
+    #defa ult User
+    user_id = 3
+    if token and len(token) != 0:
+        user = jwt.decode(token, 'MINI_SECRET', algorithms=['HS256'])
+        username = user['username']
+        session = controller.get_user(username)
+        user_id = dict(session)['user_id']
 
-    return file_data
+    data = str(controller.handleDBFetchAPI(req_uri, user_id)).encode()
+    # file_data = template.render(
+    #     {'data': data, 'token': token}, loader=loader).encode('utf-8')
 
-    # if req_uri in ['/add_friends.html', "add_friends.html"]:
-    #     return add_friends()
+    return data

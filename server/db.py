@@ -1,7 +1,6 @@
 import sqlite3
 import os
 import json
-from persistqueue import sqlqueue
 from argon2 import PasswordHasher
 
 ph = PasswordHasher()

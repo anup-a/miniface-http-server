@@ -41,11 +41,9 @@ def handle_req(req_sock):
     if http_req == 'GET':
         handle_GET(req_sock, req_line, token)
         req_sock.close()
-
     elif http_req == 'POST':
         handle_POST(req_sock, req_line, req_headers, token)
         req_sock.close()
-
     else:
         print(f'{http_req} Not Implemented Yet')
         req_sock.sendall(
