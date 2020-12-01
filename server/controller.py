@@ -6,6 +6,8 @@ from argon2 import PasswordHasher
 from response import handle_redirect
 import jwt
 import re
+import timeago, datetime
+
 # from chat import run_chat_server
 from random import randint
 
@@ -58,9 +60,11 @@ def handleDBFetchAPI(req_uri, user_id):
         if req_uri[0:14] in ['/messages.html']:
             friend_user_id=req_uri[22:]
         friend_user_id=int(friend_user_id)
+        name = get_user_by_id(friend_user_id)
         return  {
             'chat' : get_messages(user_id,friend_user_id),
-            'user_id' : user_id,}
+            'user_id' : user_id,
+            'name': name}
     # if req_uri in ['/chat/start']:
     #     port = get_port_from_user(user_id)
     #     print(port)
@@ -536,12 +540,11 @@ def getOnlineFriends(user_id):
     for friend in c:
         dic = dict(friend)
         online_friends.append(dic)
-    print(online_friends)
+
     friends_with_names = []
 
     for user in online_friends:
-        friends_with_names.append( { 'user_id' : user_id, 'name' : get_user_by_id(user['user_id'])} )
-    print(friends_with_names)
+        friends_with_names.append( { 'user_id' : user['user_id'], 'name' : get_user_by_id(user['user_id'])} )
 
     return friends_with_names
 
@@ -569,8 +572,12 @@ def get_messages(user_id,friend_user_id):
     c = cur.fetchall()
 
     message1_2 = []
+    now = datetime.datetime.utcnow()
     for x in c:
         dic = dict(x)
+        date = dic['timestamp']
+        print(date)
+        dic['time'] = timeago.format(date, now)
         # dic['message'] = dic['message'].decode('ascii')
         message1_2.append(dic)
     cur = con.cursor()

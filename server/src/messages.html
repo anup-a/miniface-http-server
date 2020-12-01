@@ -25,9 +25,22 @@
       .chat {        
         display: flex;
         flex-direction: column;
-        height: 60vh;
+        height: 55vh;
         padding: 2rem;
         overflow-y: scroll;
+      }
+      .left {
+        align-self: start;
+        font-size: 0.7rem;
+        color: #979797;
+        margin-left: 2rem;
+      }
+
+      .right {
+        align-self: flex-end;
+        font-size: 0.7rem;
+        color: #979797;
+        margin-right: 2rem;
       }
 
       .sent {
@@ -93,19 +106,46 @@
       button img {
         width: 100%;
       }
+
+      .sender-name {
+        width: 100%;
+        background-color: #3d3f41;
+        height: 70px;
+        display: flex;
+        justify-content: flex-start;
+        padding-left: 4rem;
+        align-items: center;
+        font-weight: 700;
+        color: white;
+      }
+
+      .green-dot {
+        width: 10px;
+        height: 10px;
+        background-color: #00A400;
+        border-radius: 50%;
+        margin-right: 1rem;
+    }
       
     </style>
   </head>
   <body>
     #include( 'server/src/nav.html' )
     <div id="conversation">
+      <div class="sender-name"><div class="green-dot"></div>
+      @data.name</div>
       <div class="chat" id="chat">
         #for @message in @data.chat:
+       
         #if (@message.user_id1 == @data.user_id)
+        <span class="right">@message.time
+        </span>
         <div class="sent">
             @message.message
         </div>
         #else
+        <span class="left">@message.time
+        </span>
         <div class="received">
           @message.message
         </div>
@@ -114,7 +154,7 @@
       </div>
       <form method="POST" action="/insert_message" class="msg-input">
         <input type="text"  name="msg" id="msg" class="msg-input-text" placeholder="Type Message"/>
-        <input type="hidden"  name="friend_user_id" id="friend_id" />
+        <input type="hidden"  name="friend_user_id" id="friend_id"/>
         <button type="submit" class="send-btn">
           <img src="./assets/Fill.svg" alt="">
         </button>
@@ -127,11 +167,14 @@
 
     var objDiv = document.getElementById("chat");
     objDiv.scrollTop = objDiv.scrollHeight;
-    
-    function sendMessage() {
 
-    }
-    var friend_user_id=window.location.href.slice(43,);
-    document.getElementById("friend_id").value=friend_user_id;
+    var friend_id = window.location.href.split("=")[1]
+    document.getElementById("friend_id").value = friend_id
+
+
+    setTimeout(function(){
+      window.location.reload(1);
+   }, 10000);
+   
   </script>
 </html>
