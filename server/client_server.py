@@ -30,7 +30,7 @@ def parse_message(req_sock):
 def receive(req_sock):
     req = parse_message(req_sock)
     while req!=b'Quit\r\n\r\n' and req_sock not in stopthreads:
-        print(req)
+        print(req.decode()[:-4])
         req = parse_message(req_sock)
     stopthreads.add(req_sock)
 
@@ -97,6 +97,11 @@ if __name__ == '__main__':
     HOST = 'localhost' 
     if len(sys.argv)==5:
         HOST = sys.argv[4]
+        if sys.argv[1]=='server':
+            server(HOST, int(sys.argv[2]))
+        elif sys.argv[1]=='requester':
+            send_join_request(HOST, int(sys.argv[2]))
+
     if len(sys.argv)==3:
         if sys.argv[1]=='server':
             server(HOST, int(sys.argv[2]))

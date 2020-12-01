@@ -3,7 +3,17 @@ import time
 import requests
 import re
 import subprocess, sys
-
+#login_password
+#online_friends
+#ip_address_show
+#connection
+'''
+how to run:
+for server:
+    python3 server/client.py server <ip_Address>
+for client
+    python3 server/client.py client <ip_Address>
+'''
 def login(req, payload):
     return(requests.post("http://localhost:8080/{}".format(req), payload))
 
@@ -25,25 +35,28 @@ def request_to_join(HOST, port):
 
 if __name__ == '__main__':
 
-    
-    payload = {'username':'B', "password":'hianup'}
-    r = login('login_page.html', payload)
-    print(r.text)
-    if 'document.cookie' not in r.text:
-        print("The user does not exist.")
-        sys.exit()
-    cookie = re.findall('document.cookie = ".*"', r.text)[0]
-    print(cookie)
-    print('Add post')
-    r = POST("addpost.html", {'name': "Hi, How do you do?"}, headers={'Cookie': cookie[19:-1]})
-    print(r.text)
-    print('Index')
-    r = GET('index.html', {'Cookie': cookie[19:-1]})
-    print(r.text)
-    print("Friends")
-    r = GET('friends.html', {'Cookie': cookie[19:-1]})
-    print(r.text)
-    r = GET('online.html', {'Cookie': cookie[19:-1]})
-    print(r.text)
-    request_to_join('', '12345')
-    run_server('', '12345')
+    if sys.argv[1]=="server":
+        run_server(sys.argv[2], '12345')
+
+    elif sys.argv[1]=="client":
+        
+        payload = {'username':'A', "password":'hianup'}
+        r = login('login_page.html', payload)
+        print(r.text)
+        if 'document.cookie' not in r.text:
+            print("The user does not exist.")
+            sys.exit()
+        cookie = re.findall('document.cookie = ".*"', r.text)[0]
+        print(cookie)
+        print('Add post')
+        r = POST("addpost.html", {'name': "Hi, How do you do?"}, headers={'Cookie': cookie[19:-1]})
+        print(r.text)
+        print('Index')
+        r = GET('index.html', {'Cookie': cookie[19:-1]})
+        print(r.text)
+        print("Friends")
+        r = GET('friends.html', {'Cookie': cookie[19:-1]})
+        print(r.text)
+        r = GET('online.html', {'Cookie': cookie[19:-1]})
+        print(r.text)
+        request_to_join(sys.argv[2], '12345')
