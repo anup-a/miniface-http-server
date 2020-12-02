@@ -94,13 +94,13 @@ def send_join_request(HOST, port):
     sys.exit()
 
 if __name__ == '__main__':
-    HOST = 'localhost' 
-    if len(sys.argv)==5:
-        HOST = sys.argv[4]
-        if sys.argv[1]=='server':
-            server(HOST, int(sys.argv[2]))
-        elif sys.argv[1]=='requester':
-            send_join_request(HOST, int(sys.argv[2]))
+    HOST = input("Please enter IP of the person to chat : ")
+    # if len(sys.argv)==5:
+    #     HOST = sys.argv[4]
+    #     if sys.argv[1]=='server':
+    #         server(HOST, int(sys.argv[2]))
+    #     elif sys.argv[1]=='requester':
+    #         send_join_request(HOST, int(sys.argv[2]))
 
     if len(sys.argv)==3:
         if sys.argv[1]=='server':

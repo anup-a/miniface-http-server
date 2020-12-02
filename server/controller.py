@@ -25,7 +25,7 @@ def addtoDB(res_sock, req_uri, body, token=None):
 
 def handleDBFetchAPI(req_uri, user_id):
     if req_uri in ['/index.html', '', '/', "index.html"]:
-        return getPostsForUser(user_id)
+        return getPostsForUser(user_id)+get_posts_by_user(user_id)
     if req_uri in ['/users.html', "users.html"]:
         return get_users()
     if req_uri in ['/friends.html', "friends.html"]:
@@ -44,7 +44,11 @@ def handleDBFetchAPI(req_uri, user_id):
         if req_uri[0:14] in ['/messages.html']:
             friend_user_id=req_uri[22:]
         friend_user_id=int(friend_user_id)
-        return get_messages(user_id,friend_user_id)    
+        return get_messages(user_id,friend_user_id)  
+    if re.match(r"\/?feed\.html\?user=(\d+)", req_uri):
+        m = re.match(r"\/?feed\.html\?user=(\d+)", req_uri)
+        user = m.group(1)
+        return get_posts_by_user(user_id, user)  
     # if req_uri in ['/chat/start']:
     #     port = get_port_from_user(user_id)
     #     print(port)
@@ -132,9 +136,8 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
 
         updatePostStatus(post_id, status, token)
         handle_redirect(res_sock, req_uri="me.html")
-
+        
     if req_uri=='/insert_message' or req_uri == 'insert_message':
-        print(body)
         res = insert_messages(user_id,body['friend_user_id'],body['msg'])
         new_url="messages.html?friend="+body['friend_user_id']
         handle_redirect(res_sock,req_uri=new_url)
