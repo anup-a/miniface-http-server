@@ -37,6 +37,10 @@ def request_to_join( port):
 if __name__ == '__main__':
 
     if sys.argv[1]=="server":
+        user_name=input("Please enter your user name to login : ")
+        password=getpass.getpass(prompt="Enter your password : ")
+        payload = {'username':user_name, "password":password}
+        r = login('login_page.html', payload)
         run_server('12345')
 
     elif sys.argv[1]=="client":
@@ -44,12 +48,14 @@ if __name__ == '__main__':
         password=getpass.getpass(prompt="Enter your password : ")
         payload = {'username':user_name, "password":password}
         r = login('login_page.html', payload)
-        print(r.text)
+        # print(r.text)
         if 'document.cookie' not in r.text:
             print("The user does not exist.")
             sys.exit()
+        else:
+            print("Authenticated")
         cookie = re.findall('document.cookie = ".*"', r.text)[0]
-        print(cookie)
+        # print(cookie)
         while True:
             # print("Please enter 1 to chat")
             print("Please enter 2 to chat with friends")

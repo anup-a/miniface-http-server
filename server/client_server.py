@@ -94,7 +94,7 @@ def send_join_request(HOST, port):
     sys.exit()
 
 if __name__ == '__main__':
-    HOST = input("Please enter IP of the person to chat : ")
+    HOST="localhost"
     # if len(sys.argv)==5:
     #     HOST = sys.argv[4]
     #     if sys.argv[1]=='server':
@@ -106,5 +106,6 @@ if __name__ == '__main__':
         if sys.argv[1]=='server':
             server(HOST, int(sys.argv[2]))
         elif sys.argv[1]=='requester':
+            HOST = input("Please enter IP of the person to chat : ")
             send_join_request(HOST, int(sys.argv[2]))
     
