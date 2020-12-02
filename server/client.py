@@ -51,7 +51,7 @@ if __name__ == '__main__':
         cookie = re.findall('document.cookie = ".*"', r.text)[0]
         print(cookie)
         while True:
-            print("Please enter 1 to chat")
+            # print("Please enter 1 to chat")
             print("Please enter 2 to chat with friends")
             print("Please enter 3 to see your friends")
             print("Please enter 4 to see your online friends")
@@ -66,9 +66,9 @@ if __name__ == '__main__':
             print("Please enter 13 to change post status")
 
             response=int(input("Please enter your response : "))
-            if response==1:
-                request_to_join('12345')
-            elif response==2:
+            # if response==1:
+            #     request_to_join('12345')
+            if response==2:
                 request_to_join('12345')
             elif response==3:
                 r = GET('friends.html', {'Cookie': cookie[19:-1]})
@@ -86,11 +86,24 @@ if __name__ == '__main__':
             elif response==7:
                 print('Your Post')
                 r = GET('me.html', {'Cookie': cookie[19:-1]})
-                print(r.text)
+                # print(r.text)
+                temp=r.text.split("{")
+                for i in temp:
+                    i=i.replace(",",'')
+                    i=i.replace("}",'')
+                    i=i.replace("'",'')
+
+                    print(i)
             elif response==8:
                 print('All post')
                 r = GET('index.html', {'Cookie': cookie[19:-1]})
-                print(r.text)
+                temp=r.text.split("{")
+                for i in temp:
+                    i=i.replace(",",'')
+                    i=i.replace("}",'')
+                    i=i.replace("'",'')
+                    print(i)
+                # print(r.text)
             elif response==9:
                 print('Add friends')
                 user_id=int(input("Please enter User_id of person : "))
