@@ -19,7 +19,7 @@ def posts_db_create():
         con = sqlite3.connect('server/db/posts.db')
         cur = con.cursor()
         cur.execute(
-            "create table if not exists posts('post_id' integer primary key autoincrement, 'post_body' varchar(5000) not null, 'user_id' varchar(20) not null, 'status' varchar(20) not null )")
+            "create table if not exists posts('post_id' integer primary key autoincrement, 'post_body' varchar(5000) not null, 'user_id' varchar(20) not null, 'status' varchar(20) not null, 'img_path' varchar(100))")
         con.commit()
         con = sqlite3.connect('server/db/posts.db')
         cur = con.cursor()

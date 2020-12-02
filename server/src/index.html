@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="./styles/index.css" />
+    <style>
+      .facebook-image {
+        height: 100px;
+        margin-top: 2rem;
+        border-radius: 16px;
+      }
+    </style>
   </head>
   <body>
     #include( "server/src/nav.html" )
@@ -52,7 +59,13 @@
               </div>
               <div class="post-name">@post.author</div>
             </a>
-            <div class="post-desc">@post.post_body</div>
+            <div class="post-desc">
+              @post.post_body
+              <br />
+              #if(@post.img_path != 'None')
+              <img src="@post.img_path" class="facebook-image" />
+              #end
+            </div>
           </div>
           #end
         </div>

@@ -92,7 +92,10 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
 
     if req_uri == '/addpost.html' or req_uri == 'addpost.html':
         print("Adding to SQLite Database.....")
-        add_post(body["name"], token)
+        img_path = None 
+        if "img_path" in body:
+            img_path = body["img_path"]
+        add_post(body["name"], img_path, token)
         print("Done. Added")
         handle_redirect(res_sock)
 
@@ -158,13 +161,14 @@ def handleDBPushAPI(res_sock, req_uri, body, token):
 # Post CONTROLLERS
 # ////////////////
 
-def add_post(post_body, token):
+def add_post(post_body, post_img_path, token):
     con = sqlite3.connect('server/db/posts.db')
     cur = con.cursor()
     user  = get_user(jwt.decode(token, 'MINI_SECRET', algorithm='HS256')['username'])
     user_id = dict(user)['user_id']
-    cur.execute("insert into posts(post_body, user_id, status) values(?,?,?)",
-                (post_body, user_id, "public"))
+    post_img_path = '/uploads/'+post_img_path
+    cur.execute("insert into posts(post_body, user_id, status, img_path) values(?,?,?,?)",
+                (post_body, user_id, "public",post_img_path))
     con.commit()
     return "success"
 
@@ -187,6 +191,9 @@ def getPostsForUser(user_id):
         user_id = x['user_id']
         author_name = get_user_by_id(user_id)
         x['author'] = author_name
+        if x['img_path'] == None:
+            x['img_path'] = 'None'
+
         posts.append(x)
         
     return posts
@@ -217,6 +224,9 @@ def get_posts_by_user(curr_user_id, user_id):
     for t in c:
         x = dict(t)
         x['author'] = author_name
+        if x['img_path'] == None:
+            x['img_path'] = 'None'
+
         posts.append(x)
     return posts
 

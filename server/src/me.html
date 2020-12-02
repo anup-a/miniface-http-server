@@ -13,6 +13,11 @@
         border: none;
         outline: none;
       }
+      .facebook-image {
+        height: 100px;
+        margin-top: 2rem;
+        border-radius: 16px;
+      }
     </style>
   </head>
   <body>
@@ -70,7 +75,12 @@
               <img src="./assets/Edit.svg" alt="" />
             </div>
           </div>
-          <div class="post-desc">@post.post_body</div>
+          <div class="post-desc">@post.post_body
+            <br />
+              #if(@post.img_path != 'None')
+              <img src="@post.img_path" class="facebook-image" />
+              #end
+          </div>
         </div>
         #end
       </div>

@@ -9,4 +9,6 @@ def body_parser(body):
         data = data2.split('=')
         postBody = data[1].replace("+", " ")
         dic[data[0]] = postBody
+    
+    print(dic)
     return dic

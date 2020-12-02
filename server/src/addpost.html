@@ -1,4 +1,9 @@
 <link rel="stylesheet" href="./styles/add.css" />
+<style>
+  .fileToUpload {
+    background-color: transparent;
+  }
+</style>
 <div id="add-post">
   <div class="form-heading">
     <div class="edit-ico">
@@ -6,7 +11,12 @@
     </div>
     <p>Create Post</p>
   </div>
-  <form method="POST" action="/addpost.html" id="add-post-form">
+  <form
+    method="POST"
+    action="/addpost.html"
+    id="add-post-form"
+    enctype="multipart/form-data"
+  >
     <textarea
       id="name"
       name="name"
@@ -15,17 +25,17 @@
       placeholder="Hey, Whats on your mind?"
     ></textarea>
     <div class="btn-grp">
-      <button class="post">
+      <button class="post" type="submit">
         <div class="post-btn">
           <img src="./assets/Fill.svg" />
         </div>
         <p>Submit</p>
       </button>
-      <button class="image">
+      <button class="image" style="width: 300px">
         <div class="image-btn">
           <img src="./assets/Image.svg" />
         </div>
-        <p>Add Image</p>
+        <input type="file" name="fileToUpload" class="fileToUpload" />
       </button>
     </div>
   </form>
