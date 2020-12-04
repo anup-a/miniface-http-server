@@ -11,6 +11,7 @@ To chat with a friend in the client terminal, first look at what all friends are
 
 These are all the options we have put in the CLI side of the project.
 
+```
 Please enter 2 to chat with friends 
 Please enter 3 to see your friends 
 Please enter 4 to see your online friends 
@@ -23,3 +24,4 @@ Please enter 10 to see all pending request
 Please enter 11 to accept pending request 
 Please enter 12 to reject pending request 
 Please enter 13 to change post status 
+```
