@@ -1,6 +1,6 @@
 Running Instructions
 
-How to run Client-server: 
+How to run: 
 ```
 Server: python3 server/server.py 
 Client: python3 server/client.py client 
