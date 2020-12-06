@@ -2,7 +2,7 @@
 
 MiniFace HTTP Server is the minimal replica of facebook with custom socket server implementation, custom framework. It servers html pages using quik templating engine, and data is handled with sqlite.
 
-Note : This project is just to demonstrate minimal http server, and none of the techniques are scaled to their standard and efficient level. 
+*Note : This project is just to demonstrate minimal http server, and none of the techniques are scaled to their standard and efficient level.*
 
 ![image](https://user-images.githubusercontent.com/29516633/100913633-0ed05480-34f8-11eb-8614-5fe0af21fdb8.png)
 
@@ -55,7 +55,7 @@ Note : This project is just to demonstrate minimal http server, and none of the 
 
 ## Running Instructions
 
-**Github Repository - **
+**Github Repository -**
 	
 - *Branch Master* - 
 This branch contains code to run server and client on browser.
@@ -71,7 +71,7 @@ Client - We have implemented a server to handle HTTP Requests, hence browser can
 > Default - run `http://localhost:8080` on browser
 
 
-**Client Branch - How to run Client-server: **
+**Client Branch - How to run Client-server:**
 
 > Server: `python3 server/server.py`
 
