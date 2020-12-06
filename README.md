@@ -20,23 +20,17 @@ MiniFace HTTP Server is the minimal replica of facebook with custom socket serve
 
 ## Code Structure
 
-- server.py - Custom socket server to recieve HTTP Requests
-
-- http_requests.py - Handle GET & POST Requests separately
-
-- response.py - create response based on user's request.
-
-- db.py - initialize db and defines schema
-
-- controller.py - handles all data related operations
-
-- src/* - all the static servings
-
-- src/uploads/* - all the uploaded images are stored in this dir
-
-- helpers.py - all the methods to parse HTTP headers.
-
-- body_parser.py - formats the form body for signup/login/post-form data.
+| Files | Function |
+| ------ | -------- |
+| `server.py` | Custom socket server to recieve HTTP Requests |
+| `http_requests.py` | Handle GET & POST Requests separately |
+| `response.py` | create response based on user's request. |
+| `db.py` | initialize db and defines schema |
+| `controller.py` | handles all data related operations |
+| `src/*` | all the static servings |
+| `src/uploads/*` | all the uploaded images are stored in this dir |
+| `helpers.py` | all the methods to parse HTTP headers |
+| `body_parser.py` | formats the form body for signup/login/post-form data |
 
 ## Snapshots
 
