@@ -1,6 +1,6 @@
 # MiniFace HTTP Server
 
-MiniFace HTTP Server is the minimal replica of facebook with custom socket server implementation, custom framework. It servers html pages using quik templating engine, and data is handled with sqlite.
+MiniFace HTTP Server is the minimal replica of facebook with custom socket server implementation, custom framework. It serves html pages using quik templating engine, and data is handled with sqlite.
 
 *Note : This project is just to demonstrate minimal http server, and none of the techniques are scaled to their standard and efficient level.*
 
