@@ -27,29 +27,33 @@ Mini Facebook is the minimal replica of facebook with custom socket server imple
 
 ## Features
 
-Main Section
 
-![image](https://user-images.githubusercontent.com/29516633/100913883-58b93a80-34f8-11eb-975e-819ed859936e.png)
-
-----
-
-Chat Section
-
-![image](https://user-images.githubusercontent.com/29516633/100913917-65d62980-34f8-11eb-8f1d-d9f64c5b34c4.png)
-
-----
+| Section      | Snapshot |
+| ----------- | ----------- |
+| Main Section      | ![image](https://user-images.githubusercontent.com/29516633/100913883-58b93a80-34f8-11eb-975e-819ed859936e.png)|
+| Chat Section   | <center> <img src="https://user-images.githubusercontent.com/29516633/100913917-65d62980-34f8-11eb-8f1d-d9f64c5b34c4.png" width="60%"></center>|
+| User's Timeline   | ![image](https://user-images.githubusercontent.com/29516633/100914069-94540480-34f8-11eb-9e41-d8477e0ea8cc.png)|
+| Friend's Section   | ![image](https://user-images.githubusercontent.com/29516633/100914416-088ea800-34f9-11eb-82d9-7e4c2f79faa5.png)|
 
 
-User's Timeline
-
-![image](https://user-images.githubusercontent.com/29516633/100914069-94540480-34f8-11eb-9e41-d8477e0ea8cc.png)
 
 
 ----
 
-Friend's Section
 
-![image](https://user-images.githubusercontent.com/29516633/100914416-088ea800-34f9-11eb-82d9-7e4c2f79faa5.png)
+
+
+----
+
+
+
+
+
+
+----
+
+
+
 
 ----
 
