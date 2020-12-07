@@ -118,7 +118,7 @@ Connection: Keep-Alive
 #### Contributors
 
 - Abhisht Tiwari - IIT Gn CSE
-- Aditya Grag - IIT Gn CSE
+- Aditya Garg - IIT Gn CSE
 - Anup Aglawe - IIT Gn CSE
 
 #### UI Designs
